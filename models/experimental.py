@@ -1,4 +1,25 @@
-from models.common import *
+# YOLOv5 experimental modules
+
+import numpy as np
+import torch
+import torch.nn as nn
+
+from models.common import Conv, DWConv
+from utils.google_utils import attempt_download
+
+
+class CrossConv(nn.Module):
+    # Cross Convolution Downsample
+    def __init__(self, c1, c2, k=3, s=1, g=1, e=1.0, shortcut=False):
+        # ch_in, ch_out, kernel, stride, groups, expansion, shortcut
+        super(CrossConv, self).__init__()
+        c_ = int(c2 * e)  # hidden channels
+        self.cv1 = Conv(c1, c_, (1, k), (1, s))
+        self.cv2 = Conv(c_, c2, (k, 1), (s, 1), g=g)
+        self.add = shortcut and c1 == c2
+
+    def forward(self, x):
+        return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
 
 
 class Sum(nn.Module):
@@ -27,8 +48,8 @@ class GhostConv(nn.Module):
     def __init__(self, c1, c2, k=1, s=1, g=1, act=True):  # ch_in, ch_out, kernel, stride, groups
         super(GhostConv, self).__init__()
         c_ = c2 // 2  # hidden channels
-        self.cv1 = Conv(c1, c_, k, s, g, act)
-        self.cv2 = Conv(c_, c_, 5, 1, c_, act)
+        self.cv1 = Conv(c1, c_, k, s, None, g, act)
+        self.cv2 = Conv(c_, c_, 5, 1, None, c_, act)
 
     def forward(self, x):
         y = self.cv1(x)
@@ -37,7 +58,7 @@ class GhostConv(nn.Module):
 
 class GhostBottleneck(nn.Module):
     # Ghost Bottleneck https://github.com/huawei-noah/ghostnet
-    def __init__(self, c1, c2, k, s):
+    def __init__(self, c1, c2, k=3, s=1):  # ch_in, ch_out, kernel, stride
         super(GhostBottleneck, self).__init__()
         c_ = c2 // 2
         self.conv = nn.Sequential(GhostConv(c1, c_, 1, 1),  # pw
@@ -48,17 +69,6 @@ class GhostBottleneck(nn.Module):
 
     def forward(self, x):
         return self.conv(x) + self.shortcut(x)
-
-
-class ConvPlus(nn.Module):
-    # Plus-shaped convolution
-    def __init__(self, c1, c2, k=3, s=1, g=1, bias=True):  # ch_in, ch_out, kernel, stride, groups
-        super(ConvPlus, self).__init__()
-        self.cv1 = nn.Conv2d(c1, c2, (k, 1), s, (k // 2, 0), groups=g, bias=bias)
-        self.cv2 = nn.Conv2d(c1, c2, (1, k), s, (0, k // 2), groups=g, bias=bias)
-
-    def forward(self, x):
-        return self.cv1(x) + self.cv2(x)
 
 
 class MixConv2d(nn.Module):
@@ -83,3 +93,42 @@ class MixConv2d(nn.Module):
 
     def forward(self, x):
         return x + self.act(self.bn(torch.cat([m(x) for m in self.m], 1)))
+
+
+class Ensemble(nn.ModuleList):
+    # Ensemble of models
+    def __init__(self):
+        super(Ensemble, self).__init__()
+
+    def forward(self, x, augment=False):
+        y = []
+        for module in self:
+            y.append(module(x, augment)[0])
+        # y = torch.stack(y).max(0)[0]  # max ensemble
+        # y = torch.stack(y).mean(0)  # mean ensemble
+        y = torch.cat(y, 1)  # nms ensemble
+        return y, None  # inference, train output
+
+
+def attempt_load(weights, map_location=None):
+    # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
+    model = Ensemble()
+    for w in weights if isinstance(weights, list) else [weights]:
+        attempt_download(w)
+        ckpt = torch.load(w, map_location=map_location)  # load
+        model.append(ckpt['ema' if ckpt.get('ema') else 'model'].float().fuse().eval())  # FP32 model
+
+    # Compatibility updates
+    for m in model.modules():
+        if type(m) in [nn.Hardswish, nn.LeakyReLU, nn.ReLU, nn.ReLU6, nn.SiLU]:
+            m.inplace = True  # pytorch 1.7.0 compatibility
+        elif type(m) is Conv:
+            m._non_persistent_buffers_set = set()  # pytorch 1.6.0 compatibility
+
+    if len(model) == 1:
+        return model[-1]  # return model
+    else:
+        print('Ensemble created with %s\n' % weights)
+        for k in ['names', 'stride']:
+            setattr(model, k, getattr(model[-1], k))
+        return model  # return ensemble
