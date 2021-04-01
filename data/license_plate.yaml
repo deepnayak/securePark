@@ -1,5 +1,5 @@
-train: /content/anpr_yolov5/data/train.txt
-val: /content/anpr_yolov5/data/val.txt
+train: /content/license-plate-yolov5/data/train.txt
+val: /content/license-plate-yolov5/data/val.txt
 
 # number of classes
 nc: 1
