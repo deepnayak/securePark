@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Lexend", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          align-items: inherit;
+          max-width: 400px;
+          border: 1px solid black;
+          padding: 4rem;
+          border-radius: 12px;
+          text-align: center;
+        "
+      >
+        <h2 style="padding-bottom: 2rem">Send Whatsapp Message</h2>
+
+        <form action="" method="post">
+          {% csrf_token %}
+          <label for="">To: </label>
+          <input type="text" style="margin-bottom: 1rem" name="number" />
+          <br />
+          <label for="">Text: </label>
+          <input type="textarea" style="margin-bottom: 1rem" name="content" />
+          <br />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
