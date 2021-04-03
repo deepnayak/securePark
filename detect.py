@@ -4,6 +4,7 @@ from pathlib import Path
 
 import cv2
 import torch
+from torch._C import *
 import torch.backends.cudnn as cudnn
 from numpy import random
 
@@ -14,8 +15,91 @@ from utils.general import check_img_size, check_requirements, check_imshow, non_
 from utils.plots import plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized
 
+from skimage.filters import threshold_local
+from skimage import measure
+import imutils
+import string
+from PIL import Image, ImageChops
+from io import BytesIO
+import requests
+import os
+
+license_plate=[]
+
+def crop(img0 , cord, count):
+    count += 1
+    #img = cv2.imread("/sample_cars/Cars108.png")
+    crop_img = img0[cord[1]:cord[3] , cord[0]:cord[2]]
+    cv2.imshow("cropped", crop_img)
+    cv2.imwrite("cropped"+str(count)+".jpg" , crop_img)
+
+
+    # url = "https://microsoft-computer-vision3.p.rapidapi.com/ocr"
+
+    # querystring = {"detectOrientation":"true","language":"unk"}
+    # image_url = "F:\\00 PRANAV BTECH-SPIT\\00 BTECH 2ND YEAR 2020-21\\SEM 4\\mini proj\\anpr_yolov5\\cropped"+str(count)+".jpg"
+    # # payload = '{"url\": \"{img_url}\"}.format(img_url = image_url)
+    # payload = {'url': image_url}
+    # headers = {
+    #     'content-type': "application/json",
+    #     'x-rapidapi-key': "dedcfebd09msh060a64a141b91b1p1ef7dejsn101747accf93",
+    #     'x-rapidapi-host': "microsoft-computer-vision3.p.rapidapi.com"
+    #     }
+
+    # response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
+
+    # print(response.text)
+
+    image_name=[]
+    image_number=[]
+    # Replace <Subscription Key> with your valid subscription key for Microsoft Vision API.
+    subscription_key = "cc02edee73f140d38d17232da9899d20"
+    assert subscription_key
+    vision_base_url = "https://centralindia.api.cognitive.microsoft.com/vision/v3.1/"
+    ocr_url = vision_base_url + "ocr"
+    # print("hello")
+    # try:
+    image_url = "F:\\00 PRANAV BTECH-SPIT\\00 BTECH 2ND YEAR 2020-21\\mini proj 1\\license-plate-yolov5\\cropped"+str(count)+".jpg"
+    image_data = open(image_url, "rb").read()
+    headers = {'Ocp-Apim-Subscription-Key': subscription_key, 'Content-Type': 'application/octet-stream'}
+    params = {'language': 'en', 'detectOrientation': 'true'}
+    data = {'url': image_url}
+    # print("New Iteration")
+    # print(headers)
+    # print(params)
+    # print(data)
+    response = requests.post(ocr_url, headers=headers, params=params, data = image_data)
+    while_count = 0
+    while response.status_code != 200:
+        while_count += 1
+        response = requests.post(ocr_url, headers=headers, params=params, data = image_data)
+        print(while_count)
+        time.sleep(2)
+    response.raise_for_status()
+    # print(response)
+    analysis = response.json()
+    line_infos = [region["lines"] for region in analysis["regions"]]
+    word_infos = []
+    for line in line_infos:
+            for word_metadata in line:
+                for word_info in word_metadata["words"]:
+                            word_infos.append(word_info)
+    label=[]
+    for word in word_infos:
+            label.append(word["text"])
+    image_number.append(label)
+    image_name.append(image_url)
+
+    # if image_number[0][0] not in license_plate: 
+    if(len(image_number) > 0 and len(image_number[0]) > 0):
+        if len(image_number[0][0]) >= 8 and (image_number[0][0] not in license_plate):
+            license_plate.append(image_number[0][0])
+            print(image_number[0][0])
+
+    os.remove("cropped"+str(count)+".jpg")
 
 def detect(save_img=False):
+    count = 0
     source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
     save_img = not opt.nosave and not source.endswith('.txt')  # save inference images
     webcam = source.isnumeric() or source.endswith('.txt') or source.lower().startswith(
@@ -61,6 +145,7 @@ def detect(save_img=False):
         model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
     t0 = time.time()
     for path, img, im0s, vid_cap in dataset:
+        count += 1
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
@@ -94,7 +179,12 @@ def detect(save_img=False):
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-
+                x = det
+                x = x.tolist()
+                for p in x:
+                    y = [int(z) for z in p]
+                    crop(im0, y, count)
+                    time.sleep(2)
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
