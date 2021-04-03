@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: "Lexend", sans-serif;
+    }
+  </style>
+  <body>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          align-items: inherit;
+          width: 400px;
+          border: 1px solid black;
+          padding: 4rem;
+          border-radius: 12px;
+          text-align: center;
+        "
+      >
+        <h1 style="padding-bottom: 2rem">Profile</h1>
+        <h3>Name: {{profile.name}}</h3>
+        <h3>Contact: {{profile.contact}}</h3>
+        <br>
+          {% if profile.city %}
+
+          <label for="">City: {{profile.city}}</label>
+          
+          <br />
+          <label for="">State: {{profile.state}}</label>
+          
+          <br />
+          <label for="">Country: {{profile.country}}</label>
+          
+          <br />
+          <label for="">Latitude: {{profile.lat}}</label>
+          
+          <br />
+          <label for="">Longitude: {{profile.long}}</label>
+           {% endif %}
+           <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 2rem;
+          "
+        >
+          <button style="margin-right: 1rem">
+            <a href="{% url 'update_profile' %}">Update Profile</a>
+          </button>
+          <a href="{% url 'dashboard' %}">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
