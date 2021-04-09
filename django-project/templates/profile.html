@@ -34,14 +34,14 @@
           flex-direction: column;
           justify-content: space-evenly;
           align-items: inherit;
-          width: 400px;
+          width: 300px;
           border: 1px solid black;
           padding: 4rem;
           border-radius: 12px;
           text-align: center;
         "
       >
-        <h1 style="padding-bottom: 2rem">Profile</h1>
+        <h1 style="padding-bottom: 2rem; "><span style="border-bottom: 2px goldenrod solid;">Profile</span> </h1>
         <h3>Name: {{profile.name}}</h3>
         <h3>Contact: {{profile.contact}}</h3>
         <br>
@@ -69,10 +69,12 @@
             padding-top: 2rem;
           "
         >
-          <button style="margin-right: 1rem">
-            <a href="{% url 'update_profile' %}">Update Profile</a>
+          <button style="margin-right: 1rem; padding: 0.3rem; ">
+            <a href="{% url 'update_profile' %}" style="text-decoration: none;">Update Profile</a>
           </button>
-          <a href="{% url 'dashboard' %}">Cancel</a>
+          <button style="margin-right: 1rem; padding: 0.3rem; ">
+          <a href="{% url 'dashboard' %}" style="text-decoration: none;">Cancel</a>
+          </button>
           </div>
         </div>
       </div>

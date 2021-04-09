@@ -383,6 +383,7 @@
     <title>Document</title>
   </head>
   <body>
+    <!-- Nav and Hero Start -->
     <section class="home">
       <nav class="nav" style="z-index: 1">
         <div class="container">
@@ -397,46 +398,79 @@
           </div>
         </div>
       </nav>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        "
+      >
+        <h1 style="font-size: 54px; color: white">ANPR Dashbaord</h1>
+        <!-- <h3 style="font-size: 32px; color: white">Login or Signup</h3> -->
+      </div>
+    </div>
     </section>
-    <h1 style="font-size: 54px; text-align: center">Detections</h1>
-    <button>
-      <a href="{% url 'video_page' %}">Add video</a>
-    </button>
-    <div style="display: grid; grid-template-columns: auto auto auto auto">
-      {% for vid in videos %}
-      <a
-        href="{% url 'video_detection' vid.title %}"
-        style="text-decoration: none; color: black"
-      >
-        <div
-          class="card"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 5rem;
-            border: 1.7px solid gray;
-            margin: 2rem 5rem 1rem 5rem;
-            border-radius: 5px;
-          "
-        >
-          <h3>{{vid.title}}</h3>
-        </div></a
-      >
+    <!-- Nav and Hero End -->
 
-      {% endfor %}
-    </div>
-    <h1 style="font-size: 54px; text-align: center">To send alert</h1>
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5rem;
-      "
-    >
-      <button><a href="{% url 'wapalert' %}">Send Message</a></button>
-    </div>
+    <!-- Detections Section Start -->
+    <section style="height: 70vh; align-items: center">
+      <h1 style="font-size: 54px; text-align: center">
+        <span style="border-bottom: 2px goldenrod solid">Detections</span>
+      </h1>
+      <div style="display: flex; justify-content: center; align-items: center">
+        <h2 style="padding-right: 5px">Add video:</h2>
+        <button style="margin-right: 1rem; padding: 0.3rem">
+          <a href="{% url 'video_page' %}" style="text-decoration: none"
+            >Upload
+          </a>
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: auto auto auto auto">
+        {% for vid in videos %}
+        <a
+          href="{% url 'video_detection' vid.title %}"
+          style="text-decoration: none; color: black"
+        >
+          <div
+            class="card"
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 5rem;
+              border: 1.7px solid gray;
+              margin: 2rem 5rem 1rem 5rem;
+              border-radius: 5px;
+            "
+          >
+            <h2>{{vid.title}}</h2>
+          </div></a
+        >
+
+        {% endfor %}
+      </div>
+    </section>
+    <!-- Detections Section Ends-->
+
+    <!-- Alert Section Start -->
+    <section>
+
+      <h1 style="font-size: 54px; text-align: center; "><span style="border-bottom: 2px goldenrod solid">To send Alert</span></h1>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem 0 10rem 0;
+        "
+      >
+        <button style="margin-right: 1rem; padding: 0.3rem"><a href="{% url 'wapalert' %}" style="text-decoration: none;">Send Message</a></button>
+      </div>
+    </section>
+    <!-- Alert Section Ends-->
+    
     <!-- <div style="z-index: -1">
       {% for video in videos %}
       <video width="500" height="500" controls>

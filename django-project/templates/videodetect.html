@@ -93,54 +93,62 @@ body {
   }
 }
 .rwd-table th, .rwd-table td:before {
-  color: #dd5;
+  color:white;
+  border-bottom: 1px solid black;
 }
   </style>
-  <body>
+  <body >
 
-    
-    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh">
+    <section style="height: 100vh;">
 
-      <h1 style="padding-bottom: 2rem;">Video Detection</h1>
-      
-      {% for i in videos %}
+      <h1 style="padding-top: 1rem; padding-bottom: 3rem; text-align: center; font-size: 60px;"><span style="border-bottom: 2px goldenrod solid"
+            >Video Detection</span></h1>
+      <div style="display: flex; align-items: center; justify-content: space-evenly; flex-direction: row; ">
   
-        {{ MEDIA_URL }}
-        <video width="320" height="240" autoplay="autoplay" controls>
-        <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
-        <!-- <source src="movie.ogg" type="video/ogg" /> -->
-        Your browser does not support the video tag.
-      </video>
-      {% endfor %}
-        <!-- <h1>RWD List to Table</h1> -->
-        
-        
-        <table class="rwd-table">
-          <tr>
-            <th>Detected Plate</th>
-            <th>Authorized</th>
-            <!-- <th>Year</th>
-            <th>Gross</th> -->
-          </tr>
-          <!-- <tr>
-            <td data-th="Movie Title">Star Wars</td>
-            <td data-th="Genre">Adventure, Sci-fi</td>
-            <td data-th="Year">1977</td>
-            <td data-th="Gross">$460,935,665</td>
-          </tr>
-          <tr>
-            <td data-th="Movie Title">Howard The Duck</td>
-            <td data-th="Genre">"Comedy"</td>
-            <td data-th="Year">1986</td>
-            <td data-th="Gross">$16,295,774</td>
-          </tr>
-          <tr>
-            <td data-th="Movie Title">American Graffiti</td>
-            <td data-th="Genre">Comedy, Drama</td>
-            <td data-th="Year">1973</td>
-            <td data-th="Gross">$115,000,000</td>
-          </tr> -->
-        </table>
+        <div>
+
+          {% for i in videos %}
+      
+            {{ MEDIA_URL }}
+            <video width="400" height="300" autoplay="autoplay" controls>
+            <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
+            <!-- <source src="movie.ogg" type="video/ogg" /> -->
+            Your browser does not support the video tag.
+          </video>
+          {% endfor %}
+        </div>
+          <!-- <h1>RWD List to Table</h1> -->
+          
+          
+          <table class="rwd-table">
+            <tr>
+              <th>Detected Plate</th>
+              <th>Authorized</th>
+            </tr>
+            <tr>
+              <td data-th="Movie Title">MH 03 XX XXXX</td>
+              <td data-th="Genre">Yes</td>
+              
+            </tr>
+            <tr>
+              <td data-th="Movie Title">MH 03 XX XXXX</td>
+              <td data-th="Genre" style="color: red;">No</td>
+              
+            </tr>
+            <!-- <tr>
+              <td data-th="Movie Title">Howard The Duck</td>
+              <td data-th="Genre">"Comedy"</td>
+              <td data-th="Year">1986</td>
+              <td data-th="Gross">$16,295,774</td>
+            </tr>
+            <tr>
+              <td data-th="Movie Title">American Graffiti</td>
+              <td data-th="Genre">Comedy, Drama</td>
+              <td data-th="Year">1973</td>
+              <td data-th="Gross">$115,000,000</td>
+            </tr> -->
+          </table>
+    </section>
     
   </body>
 </html>

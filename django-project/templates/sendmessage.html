@@ -41,7 +41,11 @@
           text-align: center;
         "
       >
-        <h2 style="padding-bottom: 2rem">Send Whatsapp Message</h2>
+        <h2 style="padding-bottom: 2rem">
+          <span style="border-bottom: 2px goldenrod solid"
+            >Send Whatsapp Message</span
+          >
+        </h2>
 
         <form action="" method="post">
           {% csrf_token %}
@@ -51,7 +55,14 @@
           <label for="">Text: </label>
           <input type="textarea" style="margin-bottom: 1rem" name="content" />
           <br />
-          <button type="submit">Send</button>
+          <button type="submit" style="padding: 0.3rem; margin-right: 1rem">
+            Send
+          </button>
+          <button type="submit" style="padding: 0.3rem">
+            <a href="{% url 'dashboard' %}" style="text-decoration: none"
+              >Cancel</a
+            >
+          </button>
         </form>
       </div>
     </div>
