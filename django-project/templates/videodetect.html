@@ -17,15 +17,130 @@
       padding: 0;
       font-family: "Lexend", sans-serif;
     }
+    @import "https://fonts.googleapis.com/css?family=Montserrat:300,400,700";
+.rwd-table {
+  margin: 1em 0;
+  min-width: 300px;
+}
+.rwd-table tr {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+.rwd-table th {
+  display: none;
+}
+.rwd-table td {
+  display: block;
+}
+.rwd-table td:first-child {
+  padding-top: .5em;
+}
+.rwd-table td:last-child {
+  padding-bottom: .5em;
+}
+.rwd-table td:before {
+  content: attr(data-th) ": ";
+  font-weight: bold;
+  width: 6.5em;
+  display: inline-block;
+}
+@media (min-width: 480px) {
+  .rwd-table td:before {
+    display: none;
+  }
+}
+.rwd-table th, .rwd-table td {
+  text-align: left;
+}
+@media (min-width: 480px) {
+  .rwd-table th, .rwd-table td {
+    display: table-cell;
+    padding: .25em .5em;
+  }
+  .rwd-table th:first-child, .rwd-table td:first-child {
+    padding-left: 0;
+  }
+  .rwd-table th:last-child, .rwd-table td:last-child {
+    padding-right: 0;
+  }
+}
+
+body {
+  padding: 0 2em;
+  font-family: Montserrat, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  color: #444;
+  background: #eee;
+}
+
+
+.rwd-table {
+  background: #34495E;
+  color: #fff;
+  border-radius: .4em;
+  overflow: hidden;
+}
+.rwd-table tr {
+  border-color: #46637f;
+}
+.rwd-table th, .rwd-table td {
+  margin: .5em 1em;
+}
+@media (min-width: 480px) {
+  .rwd-table th, .rwd-table td {
+    padding: 1em !important;
+  }
+}
+.rwd-table th, .rwd-table td:before {
+  color: #dd5;
+}
   </style>
   <body>
-    <h1>In video detect {{videos}}</h1>
 
-    <br />
-    <video width="320" height="240" controls>
-      <source src="{{videos.video.url}}" type="video/m" />
-      <!-- <source src="movie.ogg" type="video/ogg" /> -->
-      Your browser does not support the video tag.
-    </video>
+    
+    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh">
+
+      <h1 style="padding-bottom: 2rem;">Video Detection</h1>
+      
+      {% for i in videos %}
+  
+        {{ MEDIA_URL }}
+        <video width="320" height="240" autoplay="autoplay" controls>
+        <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
+        <!-- <source src="movie.ogg" type="video/ogg" /> -->
+        Your browser does not support the video tag.
+      </video>
+      {% endfor %}
+        <!-- <h1>RWD List to Table</h1> -->
+        
+        
+        <table class="rwd-table">
+          <tr>
+            <th>Detected Plate</th>
+            <th>Authorized</th>
+            <!-- <th>Year</th>
+            <th>Gross</th> -->
+          </tr>
+          <!-- <tr>
+            <td data-th="Movie Title">Star Wars</td>
+            <td data-th="Genre">Adventure, Sci-fi</td>
+            <td data-th="Year">1977</td>
+            <td data-th="Gross">$460,935,665</td>
+          </tr>
+          <tr>
+            <td data-th="Movie Title">Howard The Duck</td>
+            <td data-th="Genre">"Comedy"</td>
+            <td data-th="Year">1986</td>
+            <td data-th="Gross">$16,295,774</td>
+          </tr>
+          <tr>
+            <td data-th="Movie Title">American Graffiti</td>
+            <td data-th="Genre">Comedy, Drama</td>
+            <td data-th="Year">1973</td>
+            <td data-th="Gross">$115,000,000</td>
+          </tr> -->
+        </table>
+    
   </body>
 </html>

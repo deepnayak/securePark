@@ -8,6 +8,8 @@ from .forms import *
 import requests
 from .models import *
 from .whatsapp import message
+import os
+from pathlib import Path
 
 def index(request):
     return render(request, 'index.html')
@@ -145,9 +147,14 @@ def video_page(request):
 
 def video_detection(request, name):
     videos = DetectionVideo.objects.filter(title=name)
-    context = {'videos': videos}
+    # video_path = [os.path.join(os.getcwd(), "videos", x.path) for x in videos]
+    video_path = [x.path for x in videos]
+    # videos = os.path.join(os.getcwd(), videos.title)
+    # BASE_DIR = Path(__file__).resolve().parent.parent
+    # print("hi from " + f"{BASE_DIR}")
+    context = {'videos': video_path}
     return render(request, 'videodetect.html', context) 
-
+    
 
 def wapalert(request):
     if request.method == 'POST': 

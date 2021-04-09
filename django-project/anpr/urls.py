@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from app import views 
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,4 +32,4 @@ urlpatterns = [
     path('uploadvideo/', views.video_page, name="video_page"),
     path('dashboard/<str:name>/', views.video_detection, name="video_detection"),
     path('alerts/', views.wapalert, name="wapalert"),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

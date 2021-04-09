@@ -83,9 +83,10 @@
       .home {
         width: 100%;
         height: 100vh;
-        background-image: url("https://images.unsplash.com/photo-1498550744921-75f79806b8a7?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=b0f6908fa5e81286213c7211276e6b3d&auto=format&fit=crop&w=1500&q=80");
+        background-image: url("https://bitmovin.com/wp-content/uploads/2019/08/Object_detection_Blog_Image_Q3_19.jpg");
         background-position: center top;
         background-size: cover;
+        /* background-image: linear-gradient(rgba(0, 0, 0, 0), black); */
       }
 
       .navTrigger {
@@ -379,24 +380,27 @@
   </head>
   <body>
     <section class="home">
-      <nav class="nav">
-        <div class="container">
-          <div class="logo">
-            <a href="{% url 'dashboard' %}">Your Logo</a>
+      <div style="background-color: rgba(0, 0, 0, 0.6);">
+        
+      
+        <nav class="nav">
+          <div class="container">
+            <div class="logo">
+              <a href="{% url 'dashboard' %}">Your Logo</a>
+            </div>
+            <div id="mainListDiv" class="main_list">
+              <ul class="navlinks">
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'signup' %}">Signup</a></li>
+              </ul>
+            </div>
+            <span class="navTrigger">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
           </div>
-          <div id="mainListDiv" class="main_list">
-            <ul class="navlinks">
-              <li><a href="{% url 'login' %}">Login</a></li>
-              <li><a href="{% url 'signup' %}">Signup</a></li>
-            </ul>
-          </div>
-          <span class="navTrigger">
-            <i></i>
-            <i></i>
-            <i></i>
-          </span>
-        </div>
-      </nav>
+        </nav>
       <div
         style="
           display: flex;
@@ -409,8 +413,9 @@
         <h1 style="font-size: 54px; color: white">ANPR</h1>
         <h3 style="font-size: 32px; color: white">Go to dashboard</h3>
       </div>
+    </div>
     </section>
-    <div style="height: 100vh; align-content: center">
+    <!-- <div style="height: 100vh; align-content: center">
       <h1 style="text-align: center; padding-top: 80px; font-size: 32px">
         Select functionality
       </h1>
@@ -428,7 +433,7 @@
           style="padding-right: 10px"
         >
           <div class="innerbox p-1 m-1">Some shot</div>
-        </div> -->
+        </div> 
         <div
           class="box-inside center"
           style="background-color: pink; margin: 20px"
@@ -453,7 +458,7 @@
         >
           <h1>Web cam</h1>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- Jquery needed -->

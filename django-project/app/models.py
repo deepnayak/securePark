@@ -20,6 +20,7 @@ class Profile(models.Model):
 class DetectionVideo(models.Model):
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, default="default")
+    path = models.CharField(max_length=1000, default="default")
     video = models.FileField(upload_to='videos/')
      
     class Meta:
