@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'base.html')
 
 def login(request):
     if request.user.is_authenticated:
@@ -135,10 +135,12 @@ def get_location(request):
 
 def video_page(request): 
     if request.method == 'POST': 
+        
         title = request.POST['title']
         video = request.POST['video']
+        print(video)
         user = request.user
-        content = DetectionVideo(title=title,video=video, user=user)
+        content = DetectionVideo(title=title,video=request.POST['video'], path=str(video), user=user)
         content.save()
         return redirect('dashboard')
 

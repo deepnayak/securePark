@@ -1,0 +1,179 @@
+hr {
+  border: 0.1px solid rgb(216, 216, 216);
+}
+.fa-times {
+  color: red;
+}
+.fa-check {
+  color: greenyellow;
+}
+
+.content {
+  /* border: orange 2px solid; */
+  grid-area: content;
+  background: #f3f6f9;
+}
+.content__header {
+  /* border: greenyellow 2px solid; */
+  padding: 1rem 2rem;
+}
+
+/*  */
+
+.dashboard__grid {
+  max-width: 500px;
+  height: 100vh;
+  margin: 1rem auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 2fr 2fr;
+  gap: 2rem;
+  grid-template-areas:
+    "total_vechicles total_legal total_illegal"
+    "week_graph week_graph week_graph"
+    "recent_logs recent_logs recent_logs";
+}
+
+.total_vechicles {
+  grid-area: total_vechicles;
+  /* border: aqua 2px solid; */
+}
+.total_legal {
+  grid-area: total_legal;
+  /* border: blue 2px solid; */
+}
+.total_illegal {
+  grid-area: total_illegal;
+  /* border: red 2px solid; */
+}
+.recent_logs {
+  grid-area: recent_logs;
+  /* border: pink 2px solid; */
+}
+.week_graph {
+  grid-area: week_graph;
+  /* border: orange 2px solid; */
+}
+
+@media screen and (min-width: 768px) {
+  .dashboard__grid {
+    max-width: 760px;
+    height: 100vh;
+    margin: 1rem auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 2fr;
+    grid-template-rows: 100px 1fr;
+    gap: 2rem;
+    grid-template-areas:
+      "total_vechicles total_legal total_illegal recent_logs"
+      "week_graph week_graph week_graph recent_logs";
+  }
+
+  .total_vechicles {
+    grid-area: total_vechicles;
+    /* border: aqua 2px solid; */
+  }
+  .total_legal {
+    grid-area: total_legal;
+    /* border: blue 2px solid; */
+  }
+  .total_illegal {
+    grid-area: total_illegal;
+    /* border: red 2px solid; */
+  }
+  .recent_logs {
+    grid-area: recent_logs;
+    /* border: pink 2px solid; */
+  }
+  .week_graph {
+    grid-area: week_graph;
+    /* border: orange 2px solid; */
+  }
+}
+
+@media screen and (min-width: 1170px) {
+  .content {
+    background-color: #f1f7fc;
+  }
+  .dashboard__grid {
+    max-width: 1040px;
+    margin: 1rem auto;
+    display: grid;
+    grid-template-columns: 200px 200px 200px 1fr;
+    grid-template-rows: 100px 100px 100px 1fr;
+    gap: 1.5rem;
+    grid-template-areas:
+      "total_vechicles total_legal total_illegal recent_logs"
+      "week_graph week_graph week_graph recent_logs"
+      "week_graph week_graph week_graph recent_logs"
+      "week_graph week_graph week_graph recent_logs";
+  }
+
+  .total_vechicles {
+    background: white;
+    grid-area: total_vechicles;
+    /* border: aqua 2px solid; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 6px;
+  }
+  .section__content {
+    padding: 1rem;
+  }
+  .section__header {
+    color: grey;
+  }
+  .section__info {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+  }
+  .total_legal {
+    grid-area: total_legal;
+    background: white;
+    /* border: blue 2px solid; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 6px;
+  }
+  .total_illegal {
+    grid-area: total_illegal;
+    background: white;
+    /* border: red 2px solid; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 6px;
+  }
+  .recent_logs {
+    grid-area: recent_logs;
+    background: white;
+    /* border: pink 2px solid; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 6px;
+  }
+  .logs__header {
+    padding: 1rem 2rem;
+  }
+  .log {
+    display: flex;
+
+    padding: 1rem 0;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .week_graph {
+    grid-area: week_graph;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background: white;
+    /* border: orange 2px solid; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 6px;
+    padding: 2rem;
+  }
+  .week_graph h2 {
+    text-align: center;
+  }
+}

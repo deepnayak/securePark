@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&display=swap");
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "FontAwesome", Lato, Arial, sans-serif;
+}
+:root {
+  --textColour: #95a4c4;
+}
+
+hr {
+  border: 0.1px solid rgb(216, 216, 216);
+}
+.fa-times {
+  color: red;
+}
+.fa-check {
+  color: greenyellow;
+}
+.fas {
+  font-family: "FontAwesome" !important;
+}
+
+.main {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 60px 1fr;
+  grid-template-areas:
+    "sidebar navbar"
+    "sidebar content";
+}
+/* .divider {
+  border: gray 1px solid;
+  width: 60px;
+} */
+.sidebar {
+  /* border: red 2px solid; */
+  grid-area: sidebar;
+  background-color: #0b2559;
+  color: white;
+  position: fixed;
+  height: 100vh;
+  width: 200px;
+}
+.title {
+  /* text-align: center; */
+  display: block;
+  margin: 1rem;
+  text-align: center;
+  font-size: 2rem;
+}
+.section__title {
+  margin: 1rem 1.5rem;
+  /* letter-spacing: 0.1rem; */
+  font-weight: 700;
+
+  color: #95a4c4;
+  text-transform: uppercase;
+  /* border: greenyellow 2px solid; */
+}
+.sidebar li {
+  list-style: none;
+  padding: 0.75rem 1.5rem;
+  color: #95a4c4;
+  /* border: greenyellow 2px solid; */
+  margin: 0 auto;
+}
+.sidebar li:hover {
+  color: white;
+  background-color: #0c2e6e;
+  transition: 0.7s ease;
+  cursor: pointer;
+}
+.sidebar section {
+  padding: 1rem 0;
+}
+.dashboard__name {
+  padding: 0.5rem 2rem;
+  display: block;
+  /* border: greenyellow 2px solid; */
+  background-color: #0c2e6e;
+}
+.sidebar span {
+  margin-right: 0.75rem;
+}
+.navbar {
+  /* border: greenyellow 2px solid; */
+  grid-area: navbar;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: 0px 0px 2px black;
+  z-index: 2;
+}
+.navbar__profile {
+  display: flex;
+  cursor: pointer;
+
+  align-items: center;
+  padding: 1rem;
+  position: relative;
+}
+.navbar__profile p {
+  margin: 0 0.5rem;
+}
+.navbar__profile span:first-child {
+  font-size: 1.5rem;
+  color: #0b2559;
+}
+.navbar__profile:hover .dropdown__content {
+  display: block;
+}
+.dropdown__content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  transform: translateY(4.5rem);
+}
+.dropdown__content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown__content a:hover {
+  background-color: #ddd;
+}
