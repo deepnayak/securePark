@@ -59,9 +59,9 @@ def crop(img0 , cord, count):
     ocr_url = vision_base_url + "ocr"
     # print("hello")
     # try:
-    image_url = "D:\\Deep SPIT\\Minor Project\\license-plate-yolov5\\cropped"+str(count)+".jpg"
-    # image_data = open(image_url, "rb").read()
-    image_data = crop_img
+    image_url = os.getcwd()+"\\cropped"+str(count)+".jpg"
+    image_data = open(image_url, "rb").read()
+    # image_data = crop_img
     headers = {'Ocp-Apim-Subscription-Key': subscription_key, 'Content-Type': 'application/octet-stream'}
     params = {'language': 'en', 'detectOrientation': 'true'}
     data = {'url': image_url}
@@ -69,37 +69,37 @@ def crop(img0 , cord, count):
     # print(headers)
     # print(params)
     # print(data)
+    response = requests.post(ocr_url, headers=headers, params=params, data = image_data)
+    while_count = 0
+    # while response.status_code != 200:
+    #     while_count += 1
     # response = requests.post(ocr_url, headers=headers, params=params, data = image_data)
-    # while_count = 0
-    # # while response.status_code != 200:
-    # #     while_count += 1
-    # # response = requests.post(ocr_url, headers=headers, params=params, data = image_data)
-    #     # print(while_count)
-    #     # time.sleep(2)
-    # # response.raise_for_status()
-    # # print(response)
-    # analysis = response.json()
-    # if "regions" not in analysis:
-    #     return
-    # line_infos = [region["lines"] for region in analysis["regions"]]
-    # word_infos = []
-    # for line in line_infos:
-    #         for word_metadata in line:
-    #             for word_info in word_metadata["words"]:
-    #                         word_infos.append(word_info)
-    # label=[]
-    # for word in word_infos:
-    #         label.append(word["text"])
-    # image_number.append(label)
-    # image_name.append(image_url)
+    #     print(while_count)
+    #     time.sleep(2)
+    # response.raise_for_status()
+    print(response)
+    analysis = response.json()
+    if "regions" not in analysis:
+        return
+    line_infos = [region["lines"] for region in analysis["regions"]]
+    word_infos = []
+    for line in line_infos:
+            for word_metadata in line:
+                for word_info in word_metadata["words"]:
+                            word_infos.append(word_info)
+    label=[]
+    for word in word_infos:
+            label.append(word["text"])
+    image_number.append(label)
+    image_name.append(image_url)
 
-    # # if image_number[0][0] not in license_plate: 
-    # if(len(image_number) > 0 and len(image_number[0]) > 0):
-    #     if len(image_number[0][0]) >= 8 and (image_number[0][0] not in license_plate):
-    #         license_plate.append(image_number[0][0])
-    #         print(image_number[0][0])
+    # if image_number[0][0] not in license_plate: 
+    if(len(image_number) > 0 and len(image_number[0]) > 0):
+        if len(image_number[0][0]) >= 8 and (image_number[0][0] not in license_plate):
+            license_plate.append(image_number[0][0])
+            print(image_number[0][0])
 
-    # os.remove("cropped"+str(count)+".jpg")
+    os.remove(os.getcwd()+"\\cropped"+str(count)+".jpg")
 
 def detect(save_img=False, opt=None):
     count = 0
@@ -237,6 +237,7 @@ def detect(save_img=False, opt=None):
         print(f"Results saved to {save_dir}{s}")
 
     print(f'Done. ({time.time() - t0:.3f}s)')
+    return license_plate
 
 
 if __name__ == '__main__':

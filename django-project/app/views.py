@@ -120,7 +120,8 @@ async def detectCurVid(name):
     # parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
 
     opt = Options(source='videos/'+name, weights=os.path.abspath('../run/last.pt'))
-    detect(opt=opt)
+    license_plates = detect(opt=opt)
+    print(license_plates)
 
 
 def index(request):
