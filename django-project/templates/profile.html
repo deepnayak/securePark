@@ -1,83 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lexend:wght@500&display=swap"
-      rel="stylesheet"
-    />
-    <title>Document</title>
-  </head>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: "Lexend", sans-serif;
-    }
-  </style>
-  <body>
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      "
-    >
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          justify-content: space-evenly;
-          align-items: inherit;
-          width: 300px;
-          border: 1px solid black;
-          padding: 4rem;
-          border-radius: 12px;
-          text-align: center;
-        "
-      >
-        <h1 style="padding-bottom: 2rem; "><span style="border-bottom: 2px goldenrod solid;">Profile</span> </h1>
-        <h3>Name: {{profile.name}}</h3>
-        <h3>Contact: {{profile.contact}}</h3>
-        <br>
-          {% if profile.city %}
+{% extends 'base.html' %} {% load static %}
+<!-- Header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'profile.css' %}" />
+{% endblock header %}
+<!-- Header -->
+{% block body %}
+<div class="content">
+  <div class="changes_bar">
+    <h2>Profile Page</h2>
+    <form action="" method="POST">
+      <!-- <h1 style="padding-bottom: 2rem"><span style="border-bottom: 2px goldenrod solid;">Update Profile</span></h1> -->
+      {% csrf_token %}
+      <button href="">Save Changes</button>
+    </form>
+  </div>
+  <div class="profile__grid">
+    <div class="profile_box">
+      {{form.as_p}}
 
-          <label for="">City: {{profile.city}}</label>
-          
+      <div class="profile__header"></div>
+      <div class="profile__input"></div>
+      <a class="profile__btn"></a>
+    </div>
+    <div class="user_box"></div>
+    <div class="map">
+      <div class="map_container">
+        <h2>Location</h2>
+        <div class="form_control">
+          {% if profile.city %}
+          <label for="">Ward: </label>
+
+          {{profile.town}}
           <br />
-          <label for="">State: {{profile.state}}</label>
-          
+          <label for="">City: </label>
+          {{profile.city}}
           <br />
-          <label for="">Country: {{profile.country}}</label>
-          
+          <label for="">State: </label>
+          {{profile.state}}
           <br />
-          <label for="">Latitude: {{profile.lat}}</label>
-          
+          <label for="">Country: </label>
+          {{profile.country}}
           <br />
-          <label for="">Longitude: {{profile.long}}</label>
-           {% endif %}
-           <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-top: 2rem;
-          "
-        >
-          <button style="margin-right: 1rem; padding: 0.3rem; ">
-            <a href="{% url 'update_profile' %}" style="text-decoration: none;">Update Profile</a>
-          </button>
-          <button style="margin-right: 1rem; padding: 0.3rem; ">
-          <a href="{% url 'dashboard' %}" style="text-decoration: none;">Cancel</a>
-          </button>
-          </div>
+          <label for="">Latitude: </label>
+          {{profile.lat}}
+          <br />
+          <label for="">Longitude: </label>
+          {{profile.long}} {% endif %}
         </div>
+
+        <a href="{% url 'get_location' %}">Update Location</a>
       </div>
     </div>
-  </body>
-</html>
+  </div>
+</div>
+
+{% endblock body %}

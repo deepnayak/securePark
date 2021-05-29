@@ -1,0 +1,59 @@
+{% extends 'base.html' %} {% load static %}
+<!-- Header -->
+{% block header %}
+
+<link rel="stylesheet" href="{% static 'videovideo.css' %}" />
+
+{% endblock header %}
+<!-- Header -->
+{% block body %}
+
+<!-- Content -->
+
+<div class="content">
+  <div class="video__grid">
+    <section class="video__player">
+      <div class="video__container">
+        {% for i in videos %} {{ MEDIA_URL }}
+        <video width="610" height="340" autoplay="autoplay" controls>
+          <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        {% endfor %} {{videos}}
+      </div>
+    </section>
+    <section class="logs">
+      <div class="recent_logs">
+        <div class="logs__header">
+          <h3>Logs</h3>
+        </div>
+        <hr />
+        <div class="log__table">
+          <!-- Individual Log -->
+          <div class="log">
+            <div class="log__number">MH 03 DE 9757</div>
+            <div class="log__check">
+              <span><i class="fa fa-check"></i></span>
+            </div>
+            <div class="log__time">16:04:58</div>
+          </div>
+          <hr />
+          <!-- EO Individual Log -->
+          <!-- Individual Log -->
+          <div class="log">
+            <div class="log__number">MH 03 DE 9757</div>
+            <div class="log__check">
+              <span><i class="fa fa-times"></i></span>
+            </div>
+            <div class="log__time">16:04:58</div>
+          </div>
+          <hr />
+          <!-- EO Individual Log -->
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<!-- Content Ends-->
+
+{% endblock body %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %} {% load static %} {% block header %}
+<link rel="stylesheet" href="{% static 'logs.css' %}" />
+{% endblock header %} {% block body %}
+ <!-- Content -->
+      <div class="content">
+        <div class="logs__table">
+            <div class="logs__header">
+                <h3>Search Logs</h3>
+              </div>
+             <section class="logs">
+                 <div class="log__search">
+                     <input type="text" class="search__box" placeholder="   shrek">
+                     <input type="date" class="calendar">
+                     <select name="status" id="status" class="status">
+                         <option value="" disabled selected hidden>Status</option>
+                         <option value="Illegal">Illegal</option>
+                         <option value="Legal">Legal</option>
+                     </select>
+                     <button class="search__btn">Search</button>
+                 </div>
+            <div class="recent_logs">
+              
+              <hr />
+              <div class="log__table">
+                <!-- Individual Log -->
+                <div class="log">
+                    <div class="log__owner">Mr. Deep Nayak</div>
+                  <div class="log__number">MH 03 DE 9757</div>
+                  <div class="log__check">
+                    <span><i class="fa fa-check"></i></span>
+                  </div>
+                  <div class="log__time">16:04:58</div>
+                </div>
+                <hr />
+                <!-- EO Individual Log -->
+                <!-- Individual Log -->
+                <div class="log">
+                    <div class="log__owner">Mr. Pranav Nair</div>
+                  <div class="log__number">MH 03 DE 9757</div>
+                  <div class="log__check">
+                    <span><i class="fa fa-times"></i></span>
+                  </div>
+                  <div class="log__time">16:04:58</div>
+                </div>
+                <hr />
+                <!-- EO Individual Log -->
+              </div>
+            </div>
+        </div>
+      </div>
+      <!-- EO Content -->
+{% endblock body %}

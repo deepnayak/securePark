@@ -110,7 +110,10 @@ body {
           {% for i in videos %}
       
             {{ MEDIA_URL }}
-            <video width="400" height="300" autoplay="autoplay" controls>
+            <div class="video">
+
+              <video width="400" height="300" autoplay="autoplay" controls>
+            </div>
             <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
             <!-- <source src="movie.ogg" type="video/ogg" /> -->
             Your browser does not support the video tag.

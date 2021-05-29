@@ -193,20 +193,20 @@ def updateProfile(request):
     
         context = {'form': form, 'profile': profile}
 
-        return render(request, 'updateprofile.html', context)
+        return render(request, 'profile.html', context)
     except Profile.DoesNotExist:
         profile = Profile.objects.get(user=request.user)
-        return render(request, 'updateprofile.html')
+        return render(request, 'profile.html')
 
-def displayProfile(request):
-    try: 
-        profile = Profile.objects.get(user=request.user)
-    except Profile.DoesNotExist:
-        profile = None
-    # print(p)
-    context = {"profile": profile}
+# def displayProfile(request):
+#     try: 
+#         profile = Profile.objects.get(user=request.user)
+#     except Profile.DoesNotExist:
+#         profile = None
+#     # print(p)
+#     context = {"profile": profile}
 
-    return render(request, 'profile.html', context)
+#     return render(request, 'profile.html', context)
 
 def get_location(request):
     if request.method == "POST":
@@ -238,7 +238,7 @@ def get_location(request):
                 profile.town = f'{json_response[i]}'
         print(profile)
         profile.save()
-        return redirect("update_profile")
+        return redirect("profile")
         # print(json_response)
         # print(User.objects.filter(user=request.username))
     context = {}
@@ -246,7 +246,7 @@ def get_location(request):
     return render(request, 'geomap.html', context)
 
 
-def video_page(request): 
+def uploadvideo(request): 
     if request.method == 'POST' and 'video' in request.FILES: 
         title = request.POST['title']
         video = request.FILES['video']
@@ -256,10 +256,11 @@ def video_page(request):
         asyncio.run(detectCurVid(request.FILES['video'].name))
         return redirect('dashboard')
 
-    return render(request, 'videoupload.html')
+    return render(request, 'uploadvideo.html')
 
 
 def video_detection(request, name):
+    print(name)
     videos = DetectionVideo.objects.filter(title=name)
     # video_path = [os.path.join(os.getcwd(), "videos", x.path) for x in videos]
     video_path = [x.path for x in videos]
@@ -267,7 +268,8 @@ def video_detection(request, name):
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # print("hi from " + f"{BASE_DIR}")
     context = {'videos': video_path}
-    return render(request, 'videodetect.html', context) 
+    print(videos)
+    return render(request, 'videovideo.html', context) 
     
 
 def wapalert(request):
@@ -278,3 +280,21 @@ def wapalert(request):
         message(number, content)
     context = {}
     return render(request, 'sendmessage.html', context)
+
+
+def logs(request):
+    context = {}
+    return render(request, 'logs.html', context)
+
+def stats(request):
+    context = {}
+    return render(request, 'stats.html', context)
+
+def addusers(request):
+    context = {}
+    return render(request, 'addusers.html', context)
+
+def videolist(request):
+    videos = DetectionVideo.objects.all()
+    context = {"videos": videos}
+    return render(request, 'videolist.html', context)
