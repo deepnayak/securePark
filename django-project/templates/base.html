@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
+    <script defer src="https://use.fontawesome.com/cce2885033.js"></script>
+    {% block header %} {% endblock header %}
+
+    <!-- Font Awesow Starts -->
+
+    <!-- Font Awesow Ends -->
+
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <main class="main">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="title">ANPR</div>
+        <div class="dashboard__name">
+          <h4>
+            <a href="{% url 'dashboard' %}">
+              <span><i class="fa fa-home"></i></span> Dashboard
+            </a>
+          </h4>
+        </div>
+        <section class="navigation">
+          <div class="section__title">Navigation</div>
+          <ul>
+            <a href="{% url 'videolist' %}">
+              <li>
+                <span><i class="fa fa-play"></i></span> Videos
+              </li>
+            </a>
+            <a href="{% url 'logs' %}">
+              <li>
+                <span><i class="fa fa-copy"></i></span> Logs
+              </li>
+            </a>
+            <a href="{% url 'stats' %}">
+              <li>
+                <span><i class="fa fa-signal"></i></span> Stats
+              </li>
+            </a>
+          </ul>
+        </section>
+        <section class="profile">
+          <div class="section__title">Profile</div>
+          <ul>
+            <a href="{% url 'profile' %}">
+              <li>
+                <span><i class="fa fa-users"></i></span>Profile Info
+              </li>
+            </a>
+            <a href="{% url 'addusers' %}">
+              <li>
+                <span><i class="fa fa-plus"></i></span> Add Users
+              </li>
+            </a>
+          </ul>
+        </section>
+      </div>
+      <!-- Sidebar Ends-->
+      <!-- Navbar -->
+      <div class="navbar">
+        <div class="navbar__profile">
+          <span><i class="fa fa-user-circle"></i></span>
+          <p>Profile Name</p>
+          <span><i class="fa fa-chevron-down"></i></span>
+          <div class="dropdown__content">
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+          </div>
+        </div>
+      </div>
+      <!-- Navbar Ends -->
+
+      {% block body %} {% endblock body %}
+    </main>
+  </body>
+</html>

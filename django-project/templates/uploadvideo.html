@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% load static %}
+<!-- Header -->
+{% block header %}
+
+<link rel="stylesheet" href="{% static 'uploadvideo.css' %}" />
+
+{% endblock header %}
+<!-- Header -->
+{% block body %}
+
+<div class="content">
+  <div class="video__grid">
+    <form action="" method="POST" enctype="multipart/form-data">
+      <div class="video__form">
+        {% csrf_token %}
+        <h1 style="padding-bottom: 2rem">Upload Video</h1>
+        <div class="form_control">
+          <label for="">Title: </label>
+          <input
+            type="text"
+            name="title"
+            class="inputbox"
+            placeholder="Enter Video Title here"
+            style="margin-bottom: 2rem"
+          />
+        </div>
+        <input
+          type="file"
+          id="video"
+          name="video"
+          accept="video/mp4"
+          style="margin-bottom: 2rem; width: 20rem; margin-left: 9rem"
+        />
+        <div class="btn_box">
+          <button type="submit" style="margin-right: 0.5rem">
+            Upload Video
+          </button>
+          <button type="submit">
+            <a href="{% url 'videolist' %}" style="text-decoration: none"
+              >Cancel</a
+            >
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock body %}

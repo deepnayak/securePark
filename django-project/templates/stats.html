@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% load static %} {% block header %}
+<!-- Chart JS -->
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js"
+  integrity="sha512-yadYcDSJyQExcKhjKSQOkBKy2BLDoW6WnnGXCAkCoRlpHGpYuVuBqGObf3g/TdB86sSbss1AOP4YlGSb6EKQPg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<!-- EO Chart JS -->
+<link rel="stylesheet" href="{% static 'stats.css' %}" />
+{% endblock header %} {% block body %}
+
+<!-- Content Starts -->
+<div class="content">
+  <div class="stats__grid">
+    <div class="chart-1">
+      <h2>Time slots</h2>
+      <canvas id="barChart"></canvas>
+    </div>
+    <div class="chart-2">
+      <h2>Types of Vehicles</h2>
+      <canvas id="pieChart" width="20"></canvas>
+    </div>
+    <div class="chart-3">
+      <canvas id="myChart"></canvas>
+    </div>
+    <div class="chart-4">
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+</div>
+<!-- Content Ends -->
+<script>
+  let barChart = document.getElementById("barChart").getContext("2d");
+
+  let someBarChart = new Chart(barChart, {
+    type: "bar",
+    data: {
+      labels: ["12-4", "4-8", "8-12", "12-16", "16-20", "20-24"],
+      datasets: [
+        {
+          label: "Number of Cars",
+          data: [26, 14, 45, 32, 87, 12, 19],
+          backgroundColor: [
+            "green",
+            "red",
+            "yellow",
+            "pink",
+            "olive",
+            "purple",
+          ],
+        },
+      ],
+    },
+    options: {},
+  });
+
+  let pieChart = document.getElementById("pieChart").getContext("2d");
+  let somePieChart = new Chart(pieChart, {
+    type: "pie",
+    data: {
+      labels: ["Car", "Bike", "Others"],
+      datasets: [
+        {
+          label: "Number of Cars",
+          data: [40, 20, 26],
+          backgroundColor: ["green", "red", "pink"],
+        },
+      ],
+    },
+    options: {},
+  });
+</script>
+{% endblock body %}

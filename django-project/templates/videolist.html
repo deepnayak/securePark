@@ -1,0 +1,41 @@
+{% extends 'base.html' %} {% load static %}
+<!-- Header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'videolist.css' %}" />
+{% endblock header %}
+<!-- Header -->
+{% block body %}
+
+<div class="content">
+  <div class="changes_bar">
+    <h2>Video Page</h2>
+    <a href="{% url 'uploadvideo' %}">Add Video</a>
+  </div>
+  <div class="videolist__grid">
+    {% for vid in videos %}
+    <a href="{% url 'video_detection' vid %}">
+      <div class="box">
+        <div class="video">
+          <video src="../videos/carvid.mp4"></video>
+        </div>
+        <div class="box__info">
+          <p class="box__title">{{vid}}</p>
+          <p class="box__time">Video Time</p>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+    <!-- <div class="box">
+      <div class="video">
+        <video src="../videos/newvid.mp4"></video>
+      </div>
+      <div class="box__info">
+        <p class="box__title">Video Name</p>
+        <p class="box__time">Video Time</p>
+      </div>
+    </div> -->
+  </div>
+  {% for vid in videos %} {{vid.path}} {% endfor %}
+</div>
+
+{% endblock body %}
