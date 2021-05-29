@@ -1,8 +1,10 @@
 import os
 import sys
 import inspect
+import threading
 
 import csv, io
+from time import sleep
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -16,6 +18,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
+from django.http.response import StreamingHttpResponse
 from .forms import *
 import requests
 from .models import *
@@ -24,6 +27,11 @@ from pathlib import Path
 from detect import *
 import asyncio
 # import detect as dt
+
+frame = 0
+frame1 = 0
+t1 = 0
+t2 = 0
 
 class Options:
     def __init__(self, weights=None, source=None, img_size=None, 
@@ -100,6 +108,15 @@ class Options:
         else:
             self.exist_ok = exist_ok
         
+def frameGame(fr):
+    # print("Hereeeee")
+    global frame
+    frame = fr
+
+def frameGame1(fr):
+    # print("Hereeeee")
+    global frame1
+    frame1 = fr
 
 async def detectCurVid(name):
     # parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model.pt path(s)')
@@ -120,10 +137,57 @@ async def detectCurVid(name):
     # parser.add_argument('--name', default='exp', help='save results to project/name')
     # parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
 
+    # if name == 0 or name.startswith('http:'):
+    #     opt = Options(source=name, weights=os.path.abspath('../run/last.pt'))
+    #     for i in detect(opt=opt):
+
     opt = Options(source='videos/'+name, weights=os.path.abspath('../run/last.pt'))
     license_plates = detect(opt=opt)
     print(license_plates)
 
+def live(request):
+    return render(request, 'live.html')
+
+def gen():
+    while True:
+    # for i in camera(opt=opt):
+		# frame = camera.get_frame()
+        # frame = detect(opt=opt)
+        # sleep(0.5)
+        # print("Here")
+        global frame
+        yield (b'--frame\r\n'
+				b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+def gen1():
+    while True:
+    # for i in camera(opt=opt):
+		# frame = camera.get_frame()
+        # frame = detect(opt=opt)
+        # sleep(0.5)
+        # print("Here")
+        global frame1
+        yield (b'--frame\r\n'
+				b'Content-Type: image/jpeg\r\n\r\n' + frame1 + b'\r\n\r\n')
+
+
+def video_feed(request):
+    opt = Options(source='0', weights=os.path.abspath('../run/last.pt'))
+    t1 = threading.Thread(target=detect, name='t1', args=(False, opt, frameGame,))
+    t1.start()
+    sleep(10)
+    # print("Hererere")
+    return StreamingHttpResponse(gen(),
+					content_type='multipart/x-mixed-replace; boundary=frame')
+
+
+def webcam_feed(request):
+    opt = Options(source='http://192.168.1.52:8080/video', weights=os.path.abspath('../run/last.pt'))
+    t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
+    t2.start()
+    sleep(10)
+    return StreamingHttpResponse(gen1(),
+					content_type='multipart/x-mixed-replace; boundary=frame')
 
 def index(request):
     return render(request, 'base.html')
