@@ -310,6 +310,8 @@ def car_upload(request):
         'order': 'Order of the CSV should be name, phone, carno, carmodel, carcolour',
         'profiles': data    
               }
+
+
     # GET request returns the value of the data with the specified key.
     if request.method == "GET":
         return render(request, template, prompt)
@@ -318,6 +320,7 @@ def car_upload(request):
     if not csv_file.name.endswith('.csv'):
         messages.error(request, 'THIS IS NOT A CSV FILE')
     data_set = csv_file.read().decode('UTF-8')
+    print(data_set)
     # setup a stream which is when we loop through each line we are able to handle a data in a stream
     io_string = io.StringIO(data_set)
     print(io_string)
@@ -325,7 +328,7 @@ def car_upload(request):
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         _, created = CarProfile.objects.update_or_create(
             name=column[0],
-            phone=column[1],
+            phone=column[1],    
             carno=column[2],
             carmodel=column[3],
             carcolour=column[4]
