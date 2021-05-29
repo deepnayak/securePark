@@ -41,4 +41,6 @@ class CarProfile(models.Model):
     def __str__(self):
         return self.name
 
-class Detection
+class DetectionResult(models.Model):
+    carno = models.CharField(max_length=150)
+    user = models.ForeignKey(User, default="", on_delete=models.CASCADE, null=True, blank=True)
