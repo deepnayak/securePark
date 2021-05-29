@@ -33,10 +33,12 @@ class DetectionVideo(models.Model):
 class CarProfile(models.Model):
     user = models.ForeignKey(User, default="", on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=150)
-    phone = models.CharField(max_length=150,unique=True)
-    carno = models.CharField(max_length=50,unique=True)
+    phone = models.CharField(max_length=150)
+    carno = models.CharField(max_length=50)
     carmodel = models.CharField(max_length=50)
     carcolour = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
+
+class Detection

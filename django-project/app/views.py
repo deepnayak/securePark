@@ -241,7 +241,8 @@ def dashboard(request):
 def updateProfile(request):
     try: 
         profile = Profile.objects.get(user=request.user)
-    
+        users = CarProfile.objects.filter(user=request.user)
+        print(users)
         print(request)
         form = ProfileForm(instance=Profile.objects.get(user=request.user))
         if request.method == "POST":
@@ -256,7 +257,7 @@ def updateProfile(request):
                 
                 return redirect('profile')
     
-        context = {'form': form, 'profile': profile}
+        context = {'form': form, 'profile': profile, 'users': users}
 
         return render(request, 'profile.html', context)
     except Profile.DoesNotExist:
@@ -355,9 +356,9 @@ def stats(request):
     context = {}
     return render(request, 'stats.html', context)
 
-def addusers(request):
-    context = {}
-    return render(request, 'addusers.html', context)
+# def addusers(request):
+#     context = {}
+#     return render(request, 'addusers.html', context)
 
 def videolist(request):
     videos = DetectionVideo.objects.all()
@@ -365,9 +366,11 @@ def videolist(request):
     return render(request, 'videolist.html', context)
 
     
-def car_upload(request):
+def addusers(request):
     # declaring template
+
     template = "addcars.html"
+    
     data = CarProfile.objects.all()
 # prompt is a context variable that can have different values      depending on their context
     prompt = {
@@ -375,27 +378,32 @@ def car_upload(request):
         'profiles': data    
               }
 
-
     # GET request returns the value of the data with the specified key.
     if request.method == "GET":
-        return render(request, template, prompt)
+        users = CarProfile.objects.filter(user=request.user)
+        context = {'users': users}
+        print(users)
+        return render(request, template, context)
     csv_file = request.FILES.get('file', False)
     # let's check if it is a csv file
-    if not csv_file.name.endswith('.csv'):
-        messages.error(request, 'THIS IS NOT A CSV FILE')
+    # if not csv_file.name.endswith('.csv'):
+    #     messages.error(request, 'THIS IS NOT A CSV FILE')
     data_set = csv_file.read().decode('UTF-8')
-    print(data_set)
     # setup a stream which is when we loop through each line we are able to handle a data in a stream
     io_string = io.StringIO(data_set)
     print(io_string)
     next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         _, created = CarProfile.objects.update_or_create(
+            user=request.user,
             name=column[0],
             phone=column[1],    
             carno=column[2],
             carmodel=column[3],
-            carcolour=column[4]
+            carcolour=column[4],
+
         )
-    context = {}
+    users = CarProfile.objects.filter(user=request.user)
+    # Get all users
+    context = {'users': users}
     return render(request, template, context)

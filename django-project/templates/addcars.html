@@ -1,47 +1,48 @@
 {% extends 'base.html' %} {% load static %}
 <!-- Header -->
-{% block header %} {% endblock header %}
+{% block header %}
+<link rel="stylesheet" href="{% static 'addusers.css' %}" />
+{% endblock header %}
 <!-- Header -->
 {% block body %}
 
-<div
-  style="
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin-left: 30rem;
-  "
->
-  <div
-    style="
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      align-items: inherit;
-      max-width: 400px;
-      border: 1px solid black;
-      padding: 4rem;
-      border-radius: 12px;
-      text-align: center;
-    "
-  >
-    <form action="" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <h1 style="padding-bottom: 2rem">
-        <span style="border-bottom: 2px goldenrod solid">Upload Video</span>
-      </h1>
-      <label for="file1"> Upload Car Data file</label>
-      <input type="file" id="file1" name="file" />
-      <small>Only accepts CSV files</small>
-      <button type="submit" style="padding: 0.3rem; margin-right: 1rem">
-        Upload
-      </button>
-      <button type="submit" style="padding: 0.3rem">
-        <a href="{% url 'dashboard' %}" style="text-decoration: none">Cancel</a>
-      </button>
-    </form>
+<div class="content">
+  <div class="grid__wrapper">
+    <div class="upload__grid">
+      <form action="" method="POST" enctype="multipart/form-data">
+        <div class="upload__form">
+          {% csrf_token %}
+          <h2>Upload CSV</h2>
+          <div class="form__control">
+            <!-- <label for="file1"> Upload Car Data file</label> -->
+            <input type="file" id="file1" name="file" />
+            <p>*Only accepts CSV files</p>
+          </div>
+          <div class="btn_box">
+            <button type="submit" style="margin-right: 1rem">Upload</button>
+          </div>
+        </div>
+      </form>
+      <div class="recent_logs">
+        <h1 style="text-align: center; padding: 2rem 0">Current Users</h1>
+        <div class="log__table">
+          <hr />
+
+          {% for user in users %}
+          <!-- Individual Log -->
+          <div class="log">
+            <div class="log__owner">Mr. {{user}}</div>
+            <div class="log__number">{{user.carno}}</div>
+            <div class="log__phone">{{user.phone}}</div>
+            <div class="log__model">{{user.carmodel}}</div>
+          </div>
+          <hr />
+          <!-- {{users}} -->
+          <!-- EO Individual Log -->
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

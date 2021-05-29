@@ -1,0 +1,78 @@
+.content {
+  grid-area: content;
+  background: #f3f6f9;
+}
+.grid__wrapper {
+  width: 1000px;
+  margin: 2rem auto;
+}
+
+.upload__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 300px 1fr;
+  grid-template-areas:
+    "recent_logs upload__form"
+    "recent_logs .";
+
+  gap: 2rem;
+  /* align-items: center; */
+  justify-items: center;
+  height: 100%;
+}
+
+.upload__form {
+  grid-area: upload__form;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background: white;
+  border-radius: 6px;
+  transition: 0.3s;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+}
+/* .grid__wrapper {
+ 
+} */
+.btn_box button {
+  padding: 0.5rem 1rem;
+  background-color: #0c2e6e;
+  border-radius: 4px;
+  border: 0;
+  color: white;
+  cursor: pointer;
+}
+.form__control {
+  margin-left: 5rem;
+}
+.form__control p,
+label {
+  font-size: 0.8rem;
+}
+
+.recent_logs {
+  background: white;
+  grid-area: recent_logs;
+  width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background: white;
+  border-radius: 6px;
+  transition: 0.3s;
+  /* border: pink 2px solid; */
+
+  transition: 0.3s;
+  border-radius: 6px;
+}
+.logs__header {
+  padding: 1rem 2rem;
+}
+.log {
+  display: flex;
+  padding: 1rem 0;
+  justify-content: space-evenly;
+  align-items: center;
+}

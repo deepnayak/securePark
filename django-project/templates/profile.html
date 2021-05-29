@@ -9,7 +9,6 @@
   <div class="changes_bar">
     <h2>Profile Page</h2>
     <form action="" method="POST">
-      <!-- <h1 style="padding-bottom: 2rem"><span style="border-bottom: 2px goldenrod solid;">Update Profile</span></h1> -->
       {% csrf_token %}
       <button href="">Save Changes</button>
     </form>
@@ -22,7 +21,22 @@
       <div class="profile__input"></div>
       <a class="profile__btn"></a>
     </div>
-    <div class="user_box"></div>
+    <div class="user_box">
+      <div class="user_container">
+        <h2>Recently Added Users</h2>
+        <div class="log">
+          {% for user in users %}
+          <div class="indiviual_log">
+            <div class="log__owner">{{user}}</div>
+            <div class="log__number">{{user.carno}}</div>
+          </div>
+
+          {% endfor %}
+        </div>
+
+        <a href="{% url 'addusers' %}">See All</a>
+      </div>
+    </div>
     <div class="map">
       <div class="map_container">
         <h2>Location</h2>
