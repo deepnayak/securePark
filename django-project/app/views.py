@@ -2,6 +2,8 @@ import os
 import sys
 import inspect
 
+import csv, io
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 pparentdir = os.path.dirname(parentdir)
@@ -18,7 +20,6 @@ from .forms import *
 import requests
 from .models import *
 from .whatsapp import message
-import os
 from pathlib import Path
 from detect import *
 import asyncio
@@ -278,3 +279,34 @@ def wapalert(request):
         message(number, content)
     context = {}
     return render(request, 'sendmessage.html', context)
+
+def car_upload(request):
+    # declaring template
+    template = "carprofile_upload.html"
+    data = CarProfile.objects.all()
+# prompt is a context variable that can have different values      depending on their context
+    prompt = {
+        'order': 'Order of the CSV should be name, phone, carno, carmodel, carcolour',
+        'profiles': data    
+              }
+    # GET request returns the value of the data with the specified key.
+    if request.method == "GET":
+        return render(request, template, prompt)
+    csv_file = request.FILES['file']
+    # let's check if it is a csv file
+    if not csv_file.name.endswith('.csv'):
+        messages.error(request, 'THIS IS NOT A CSV FILE')
+    data_set = csv_file.read().decode('UTF-8')
+    # setup a stream which is when we loop through each line we are able to handle a data in a stream
+    io_string = io.StringIO(data_set)
+    next(io_string)
+    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+        _, created = CarProfile.objects.update_or_create(
+            name=column[0],
+            phone=column[1],
+            carno=column[2],
+            carmodel=column[3],
+            carcolour=column[4]
+        )
+    context = {}
+    return render(request, template, context)
