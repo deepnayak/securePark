@@ -1,6 +1,7 @@
 import argparse
 import time
 from pathlib import Path
+import asyncio
 
 import cv2
 import torch
@@ -101,7 +102,7 @@ def crop(img0 , cord, count):
 
     os.remove(os.getcwd()+"\\cropped"+str(count)+".jpg")
 
-def detect(save_img=False, opt=None):
+def detect(save_img=False, opt=None, callback=None):
     count = 0
     source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
     save_img = not opt.nosave and not source.endswith('.txt')  # save inference images
@@ -209,9 +210,15 @@ def detect(save_img=False, opt=None):
             print(f'{s}Done. ({t2 - t1:.3f}s)')
 
             # Stream results
-            if view_img:
-                cv2.imshow(str(p), im0)
-                cv2.waitKey(1)  # 1 millisecond
+            # if view_img:
+            #     cv2.imshow(str(p), im0)
+            #     cv2.waitKey(1)  # 1 millisecond
+
+            if webcam:
+                # print("Hello")
+                (flag, encodedImage) = cv2.imencode(".jpg", im0)
+                # if not flag:
+                callback(encodedImage.tobytes())
 
             # Save results (image with detections)
             if save_img:
