@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% load static %}
+<!-- Header -->
+{% block header %} {% endblock header %}
+<!-- Header -->
+{% block body %}
+
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin-left: 30rem;
+  "
+>
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: inherit;
+      max-width: 400px;
+      border: 1px solid black;
+      padding: 4rem;
+      border-radius: 12px;
+      text-align: center;
+    "
+  >
+    <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <h1 style="padding-bottom: 2rem">
+        <span style="border-bottom: 2px goldenrod solid">Upload Video</span>
+      </h1>
+      <label for="file1"> Upload Car Data file</label>
+      <input type="file" id="file1" name="file" />
+      <small>Only accepts CSV files</small>
+      <button type="submit" style="padding: 0.3rem; margin-right: 1rem">
+        Upload
+      </button>
+      <button type="submit" style="padding: 0.3rem">
+        <a href="{% url 'dashboard' %}" style="text-decoration: none">Cancel</a>
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock body %}
