@@ -36,4 +36,5 @@ urlpatterns = [
     path('videolist/', views.videolist, name="videolist"),
     path('dashboard/<str:name>/', views.video_detection, name="video_detection"),
     path('alerts/', views.wapalert, name="wapalert"),
+    path('upload-csv/', views.car_upload, name="car_upload"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
