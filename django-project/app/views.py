@@ -26,12 +26,14 @@ from .whatsapp import message
 from pathlib import Path
 from detect import *
 import asyncio
+import difflib
 # import detect as dt
 
 frame = 0
 frame1 = 0
 t1 = 0
 t2 = 0
+license_plates = []
 
 class Options:
     def __init__(self, weights=None, source=None, img_size=None, 
@@ -118,7 +120,7 @@ def frameGame1(fr):
     global frame1
     frame1 = fr
 
-async def detectCurVid(name):
+async def detectCurVid(name, request, video):
     # parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model.pt path(s)')
     # parser.add_argument('--source', type=str, default='data/images', help='source')  # file/folder, 0 for webcam
     # parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
@@ -142,6 +144,7 @@ async def detectCurVid(name):
     #     for i in detect(opt=opt):
 
     opt = Options(source='videos/'+name, weights=os.path.abspath('../run/last.pt'))
+    global license_plates
     license_plates = detect(opt=opt)
     print(license_plates)
 
@@ -319,7 +322,13 @@ def uploadvideo(request):
         user = request.user
         content = DetectionVideo(title=title,video=video, user=user, path=request.FILES['video'].name)
         content.save()
-        asyncio.run(detectCurVid(request.FILES['video'].name))
+        asyncio.run(detectCurVid(request.FILES['video'].name, request, content))
+        valid = [x.carno for x in CarProfile.objects.filter(user=request.user)]
+        for plate in license_plates:
+            if len(difflib.get_close_matches(plate, valid, cutoff=0.6)) > 0:
+                DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True)
+            else:
+                DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False)
         return redirect('dashboard')
 
     return render(request, 'uploadvideo.html')
@@ -327,13 +336,14 @@ def uploadvideo(request):
 
 def video_detection(request, name):
     print(name)
-    videos = DetectionVideo.objects.filter(title=name)
+    videos = DetectionVideo.objects.get(title=name)
+    cars = DetectionResult.objects.filter(video=videos)
     # video_path = [os.path.join(os.getcwd(), "videos", x.path) for x in videos]
-    video_path = [x.path for x in videos]
+    video_path = [videos.path]
     # videos = os.path.join(os.getcwd(), videos.title)
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # print("hi from " + f"{BASE_DIR}")
-    context = {'videos': video_path}
+    context = {'videos': video_path, 'cars': cars}
     print(videos)
     return render(request, 'videovideo.html', context) 
     
