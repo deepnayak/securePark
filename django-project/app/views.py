@@ -301,7 +301,7 @@ def videolist(request):
     return render(request, 'videolist.html', context)
 def car_upload(request):
     # declaring template
-    template = "carprofile_upload.html"
+    template = "addcars.html"
     data = CarProfile.objects.all()
 # prompt is a context variable that can have different values      depending on their context
     prompt = {

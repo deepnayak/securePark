@@ -31,6 +31,7 @@ class DetectionVideo(models.Model):
 
 
 class CarProfile(models.Model):
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     phone = models.CharField(max_length=150,unique=True)
     carno = models.CharField(max_length=50,unique=True)
