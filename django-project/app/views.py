@@ -182,7 +182,7 @@ def live(request):
 def remote(request):
     timestamp = int(datetime.now().timestamp())
     context = {'timest': timestamp, 'ty': 'video'}
-    return render(request, 'live.html', context)
+    return render(request, 'remote.html', context)
 
 def gen():
     while True:
