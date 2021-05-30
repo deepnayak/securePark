@@ -15,11 +15,18 @@
   </div>
   <div class="profile__grid">
     <div class="profile_box">
-      {{form.as_p}}
-
-      <div class="profile__header"></div>
-      <div class="profile__input"></div>
-      <a class="profile__btn"></a>
+      <div class="inner_profile">
+        <!-- {{form.as_p}} -->
+        <h1 style="letter-spacing: 0.1px">Profile</h1>
+        <div class="form__label">
+          <label for="">Name: </label>
+          <div class="profile__header">{{form.name}}</div>
+        </div>
+        <div class="form__label">
+          <label for="">Contact: </label>
+          <div class="profile__input">{{form.contact}}</div>
+        </div>
+      </div>
     </div>
     <div class="user_box">
       <div class="user_container">

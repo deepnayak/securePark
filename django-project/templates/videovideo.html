@@ -35,16 +35,16 @@
             <div class="log__number">{{i.carno}}</div>
             <div class="log__check">
               {% if i.legal %}
-                <span><i class="fa fa-check"></i></span>
+              <span><i class="fa fa-check"></i></span>
               {% else %}
-                <span><i class="fa fa-times"></i></span>
+              <span><i class="fa fa-times"></i></span>
               {% endif %}
             </div>
-            <div class="log__time">16:04:58</div>
+            <div class="log__time">{{i.created}}</div>
           </div>
           <hr />
           {% endfor %}
-        <!-- <video width="610" height="340" autoplay="autoplay" controls>
+          <!-- <video width="610" height="340" autoplay="autoplay" controls>
           <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
           Your browser does not support the video tag.
         </video> -->

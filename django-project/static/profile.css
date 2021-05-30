@@ -9,7 +9,7 @@
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
     "profile_box user_box"
-    "profile_box map";
+    "map user_box";
   gap: 2rem;
   width: 1000px;
   margin: 0 auto;
@@ -89,7 +89,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 .user_container a {
@@ -105,5 +105,24 @@
 }
 .indiviual_log {
   display: flex;
-  padding: 0.25rem 0;
+  padding: 0.5rem 0;
+}
+.inner_profile {
+  /* border: 2px solid yellowgreen; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  height: 70%;
+  margin: 2rem auto;
+}
+.form__label {
+  display: flex;
+}
+.form__label label {
+  padding-right: 1rem;
+}
+.form__label input {
+  padding: 0.25rem 1rem;
 }

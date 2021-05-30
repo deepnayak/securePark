@@ -27,6 +27,7 @@ from pathlib import Path
 from detect import *
 import asyncio
 import difflib
+from datetime import datetime
 # import detect as dt
 
 frame = 0
@@ -193,7 +194,7 @@ def webcam_feed(request):
 					content_type='multipart/x-mixed-replace; boundary=frame')
 
 def index(request):
-    return render(request, 'base.html')
+    return render(request, 'index.html')
 
 def login(request):
     if request.user.is_authenticated:
@@ -237,8 +238,8 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    videos = DetectionVideo.objects.all()
-    context = {"videos": videos}
+    logs = DetectionResult.objects.all()[:8]
+    context = {"logs": logs}
     return render(request, 'dashboard.html', context)
 
 def updateProfile(request):
@@ -326,9 +327,9 @@ def uploadvideo(request):
         valid = [x.carno for x in CarProfile.objects.filter(user=request.user)]
         for plate in license_plates:
             if len(difflib.get_close_matches(plate, valid, cutoff=0.6)) > 0:
-                DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True)
+                DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
             else:
-                DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False)
+                DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
         return redirect('dashboard')
 
     return render(request, 'uploadvideo.html')
@@ -359,7 +360,8 @@ def wapalert(request):
 
 
 def logs(request):
-    context = {}
+    logs = DetectionResult.objects.filter(user=request.user)
+    context = {"logs": logs}
     return render(request, 'logs.html', context)
 
 def stats(request):

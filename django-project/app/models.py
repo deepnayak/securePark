@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 # Create your models here.
 
 class Profile(models.Model):
@@ -46,3 +47,4 @@ class DetectionResult(models.Model):
     user = models.ForeignKey(User, default="", on_delete=models.CASCADE, null=True, blank=True)
     video = models.ForeignKey(DetectionVideo, default="", on_delete=models.CASCADE, null=True, blank=True)
     legal = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now=True)

@@ -4,3 +4,4 @@ from .models import *
 admin.site.register(Profile)
 admin.site.register(DetectionVideo)
 admin.site.register(CarProfile)
+admin.site.register(DetectionResult)
