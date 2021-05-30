@@ -2,7 +2,7 @@ import os
 import sys
 import inspect
 import threading
-
+from django.core import serializers
 import csv, io
 from time import sleep
 
@@ -28,6 +28,9 @@ from detect import *
 import asyncio
 import difflib
 from datetime import datetime
+from django.conf import settings
+
+MEDIA_DIR = settings.MEDIA_ROOT
 # import detect as dt
 
 frame = 0
@@ -35,6 +38,20 @@ frame1 = 0
 t1 = 0
 t2 = 0
 license_plates = []
+lplates = []
+stop = False
+stop1 = False
+
+# def getWeek(request):
+#     legal = DetectionResult.objects.filter(legal=False)
+#     illegal = DetectionResult.objects.filter(legal=True)
+#     legalCount = [0]*7
+#     illegalCount = [0]*7
+#     for x in legal:
+#         legalCount[x.weekday()] += 1
+#     for x in illegal:
+#         illegalCount[x.weekday()] += 1
+    
 
 class Options:
     def __init__(self, weights=None, source=None, img_size=None, 
@@ -99,7 +116,7 @@ class Options:
             self.update = update
         if project is None:
             os.path.abspath
-            self.project = os.path.abspath('../runs/detect')
+            self.project = os.path.abspath(MEDIA_DIR+'detect')
         else:
             self.project = project
         if name is None:
@@ -111,17 +128,25 @@ class Options:
         else:
             self.exist_ok = exist_ok
         
-def frameGame(fr):
+def frameGame(fr, curr):
     # print("Hereeeee")
     global frame
+    global stop
+    global lplates
+    lplates = curr
     frame = fr
+    return stop
 
-def frameGame1(fr):
+def frameGame1(fr, curr):
     # print("Hereeeee")
     global frame1
+    global stop1
+    global lplates
+    lplates = curr
     frame1 = fr
+    return stop1
 
-async def detectCurVid(name, request, video):
+async def detectCurVid(name, request, video, title):
     # parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model.pt path(s)')
     # parser.add_argument('--source', type=str, default='data/images', help='source')  # file/folder, 0 for webcam
     # parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
@@ -144,13 +169,20 @@ async def detectCurVid(name, request, video):
     #     opt = Options(source=name, weights=os.path.abspath('../run/last.pt'))
     #     for i in detect(opt=opt):
 
-    opt = Options(source='videos/'+name, weights=os.path.abspath('../run/last.pt'))
+    opt = Options(source='videos/'+name, weights=os.path.abspath('../run/last.pt'), name=title)
     global license_plates
     license_plates = detect(opt=opt)
     print(license_plates)
 
 def live(request):
-    return render(request, 'live.html')
+    timestamp = int(datetime.now().timestamp())
+    context = {'timest': timestamp, 'ty': '0'}
+    return render(request, 'live.html', context)
+
+def remote(request):
+    timestamp = int(datetime.now().timestamp())
+    context = {'timest': timestamp, 'ty': 'video'}
+    return render(request, 'remote.html', context)
 
 def gen():
     while True:
@@ -175,8 +207,10 @@ def gen1():
 				b'Content-Type: image/jpeg\r\n\r\n' + frame1 + b'\r\n\r\n')
 
 
-def video_feed(request):
-    opt = Options(source='0', weights=os.path.abspath('../run/last.pt'))
+def video_feed(request, timestamp):
+    global stop
+    stop = False
+    opt = Options(source='0', weights=os.path.abspath('../run/last.pt'), name='webcam'+str(timestamp))
     t1 = threading.Thread(target=detect, name='t1', args=(False, opt, frameGame,))
     t1.start()
     sleep(10)
@@ -185,14 +219,39 @@ def video_feed(request):
 					content_type='multipart/x-mixed-replace; boundary=frame')
 
 
-def webcam_feed(request):
-    opt = Options(source='http://192.168.1.52:8080/video', weights=os.path.abspath('../run/last.pt'))
+def webcam_feed(request, timestamp):
+    global stop1
+    stop1 = False
+    opt = Options(source='http://192.168.0.104:8080/video', weights=os.path.abspath('../run/last.pt'))
     t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
     t2.start()
     sleep(10)
     return StreamingHttpResponse(gen1(),
 					content_type='multipart/x-mixed-replace; boundary=frame')
 
+def intermediate(request, timestamp, type):
+    global stop
+    global stop1
+    stop = True
+    stop1 = True
+    user = request.user
+    path = os.path.abspath(MEDIA_DIR+'detect/webcam'+str(timestamp)+'/' + str(type) + '.mp4')
+    content = DetectionVideo(title="webcam"+str(timestamp), user=user, path=path)
+    content.save()
+    valid = [x.carno.replace(" ", "") for x in CarProfile.objects.filter(user=request.user)]
+    for plate in lplates:
+        if len(difflib.get_close_matches(plate, valid, cutoff=0.6)) > 0:
+            DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
+        else:
+            DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
+    illegal = DetectionResult.objects.filter(video=content)
+    msg = "We found the following intruders in your society:\n"
+    for x in illegal:
+        msg += (x.carno + '\n')
+    profile = Profile.objects.get(user=request.user)
+    message(profile.contact, msg)
+    return redirect('dashboard')
+    
 def index(request):
     return render(request, 'index.html')
 
@@ -238,8 +297,23 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    logs = DetectionResult.objects.all()[:8]
-    context = {"logs": logs}
+    logs = DetectionResult.objects.all()[::-1][:8]
+    
+    legal = DetectionResult.objects.filter(legal=True)
+    illegal = DetectionResult.objects.filter(legal=False)
+    legalCount = [0]*7
+    illegalCount = [0]*7
+    tlegal = len(legal)
+    tillegal = len(illegal)
+    t = tlegal + tillegal
+    for x in legal:
+        legalCount[x.created.weekday()] += 1
+    for x in illegal:
+        illegalCount[x.created.weekday()] += 1
+
+    
+    society = Profile.objects.get(user=request.user)
+    context = {"logs": logs, "lcount": legalCount, "icount": illegalCount, "tlegal": tlegal, "tillegal": tillegal, "t": t, "sn": society}
     return render(request, 'dashboard.html', context)
 
 def updateProfile(request):
@@ -321,15 +395,23 @@ def uploadvideo(request):
         title = request.POST['title']
         video = request.FILES['video']
         user = request.user
-        content = DetectionVideo(title=title,video=video, user=user, path=request.FILES['video'].name)
+        # print(os.path.abspath('./detect/'))
+        path = os.path.abspath(MEDIA_DIR+'detect/'+title+'/' + request.FILES['video'].name)
+        content = DetectionVideo(title=title, video=video, user=user, path=path)
         content.save()
-        asyncio.run(detectCurVid(request.FILES['video'].name, request, content))
-        valid = [x.carno for x in CarProfile.objects.filter(user=request.user)]
+        asyncio.run(detectCurVid(request.FILES['video'].name, request, content, title))
+        valid = [x.carno.replace(" ", "") for x in CarProfile.objects.filter(user=request.user)]
         for plate in license_plates:
             if len(difflib.get_close_matches(plate, valid, cutoff=0.6)) > 0:
                 DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
             else:
                 DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
+        illegal = DetectionResult.objects.filter(video=content)
+        msg = "We found the following intruders in your society:\n"
+        for x in illegal:
+            msg += (x.carno + '\n')
+        profile = Profile.objects.get(user=request.user)
+        message(profile.contact, msg)
         return redirect('dashboard')
 
     return render(request, 'uploadvideo.html')
@@ -340,7 +422,8 @@ def video_detection(request, name):
     videos = DetectionVideo.objects.get(title=name)
     cars = DetectionResult.objects.filter(video=videos)
     # video_path = [os.path.join(os.getcwd(), "videos", x.path) for x in videos]
-    video_path = [videos.path]
+    print(videos.path)
+    video_path = videos.path[videos.path.find(videos.title):len(videos.path)]
     # videos = os.path.join(os.getcwd(), videos.title)
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # print("hi from " + f"{BASE_DIR}")
@@ -353,6 +436,8 @@ def wapalert(request):
     if request.method == 'POST': 
         number = request.POST['number']
         content = request.POST['content']
+        videos = DetectionVideo.objects.get(title=name)
+        cars = DetectionResult.objects.filter(video=videos)
         print(number, content)
         message(number, content)
     context = {}
@@ -360,8 +445,10 @@ def wapalert(request):
 
 
 def logs(request):
-    logs = DetectionResult.objects.filter(user=request.user)
-    context = {"logs": logs}
+    logs = DetectionResult.objects.filter(user=request.user)[::-1]
+    vidName = [x.video.title for x in logs]
+    logsJS = serializers.serialize("json", logs)
+    context = {"logs": logs, "vidname": vidName, "logsJS": logsJS}
     return render(request, 'logs.html', context)
 
 def stats(request):
@@ -373,7 +460,7 @@ def stats(request):
 #     return render(request, 'addusers.html', context)
 
 def videolist(request):
-    videos = DetectionVideo.objects.all()
+    videos = DetectionVideo.objects.all()[::-1]
     context = {"videos": videos}
     return render(request, 'videolist.html', context)
 

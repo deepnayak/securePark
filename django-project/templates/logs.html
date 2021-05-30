@@ -1,98 +1,74 @@
 {% extends 'base.html' %} {% load static %} {% block header %}
 <link rel="stylesheet" href="{% static 'logs.css' %}" />
 {% endblock header %} {% block body %}
- <!-- Content -->
-      <div class="content">
-        <div class="logs__table">
-            <div class="logs__header">
-                <h1 style="padding-top: 1rem;">Search Logs</h1>
-              </div>
-             <section class="logs">
-                 <div class="log__search">
-                     <!-- <input type="text" class="search__box" placeholder="   shrek"> -->
-                      <div id="the-basics">
-                        <input class="typeahead" type="text" placeholder="States of USA">
-                      </div>
-                     <input type="date" class="calendar">
-                     <select name="status" id="status" class="status">
-                         <option value="" disabled selected hidden>Status</option>
-                         <option value="Illegal">Illegal</option>
-                         <option value="Legal">Legal</option>
-                     </select>
-                     <button class="search__btn">Search</button>
-                 </div>
+<!-- Content -->
 
-            <div class="recent_logs">  
-              <hr />
-              <div class="log__table">
-                {% for log in logs %}
-                   <!-- Individual Log -->
-                <div class="log">
-                    <div class="log__owner">Mr. {{log.name}}</div>
-                  <div class="log__number">{{log.carno}}</div>
-                  <div class="log__check">
-                    {% if log.legal %}
-                    <span><i class="fa fa-check"></i></span>
-                    {% else %}
-                    <span><i class="fa fa-times"></i></span>
-                    {% endif %}
-                  </div>
-                  <div class="log__time">{{log.created}}</div>
-                </div>
-                <hr />
-                <!-- EO Individual Log -->
-                {% endfor %}
-              </div>
-            </div>
-        </div>
+<div class="content">
+  <div class="logs__table">
+    <div class="logs__header">
+      <h1 style="padding-top: 1rem">Search Logs</h1>
+    </div>
+    <section class="logs">
+      <div class="log__search">
+        <input type="text" class="search__box" placeholder="   shrek" />
+        <input type="date" class="calendar" />
+        <select name="status" id="status" class="status">
+          <option value="" disabled selected hidden>Status</option>
+          <option value="Illegal">Illegal</option>
+          <option value="Legal">Legal</option>
+        </select>
+        <button class="search__btn">Search</button>
       </div>
-      <!-- EO Content -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.3.1/bloodhound.min.js" integrity="sha512-EvIw6kLsqQVDyosPz7YK2se/aTtTMs4q5LaG69ng7CukLR02uUp1CiyrL1Le/0jY6nqFAvCpjkOUPvIzTqv6UA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.3.1/typeahead.bundle.min.js" integrity="sha512-lEb9Vp/rkl9g2E/LdHIMFTqz21+LA79f84gqP75fbimHqVTu6483JG1AwJlWLLQ8ezTehty78fObKupq3HSHPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.3.1/typeahead.jquery.min.js" integrity="sha512-iXWyr4gbeMvV8ZGthbJmZL6DW6F/Fs4Y1xCh3HTMjbXkP7xmC4UEArzge3ZGSXjy9+Yp8mAAaZ39sAipqIJYGw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script>
-        var substringMatcher = function(strs) {
-          return function findMatches(q, cb) {
-            var matches, substringRegex;
+    </section>
+    <div class="recent_logs">
+      <hr />
+      <div class="log__table" id="log__table">
+        <!-- {% for log in logs %}
+        Individual Log 
+        <a href="{% url 'video_detection' log.video.title %}">
+          <div class="log">
+            <div class="log__owner">Mr. {{log.name}}</div>
+            <div class="log__number">{{log.carno}}</div>
+            <div class="log__check">
+              {% if log.legal %}
+              <span><i class="fa fa-check"></i></span>
+              {% else %}
+              <span><i class="fa fa-times"></i></span>
+              {% endif %}
+            </div>
+            <div class="log__time">{{log.created}}</div>
+          </div>
+        </a>
+        <hr />
+        EO Individual Log 
+        {% endfor %} -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- EO Content -->
+<script>
+  let logs = {{logsJS|safe}};
+  console.log(logs)
+  console.log(logs[0].fields);
+  let logsList = document.getElementById("log__table");
+  logs.forEach((log) => {
+    let newLog = `
+    <div class="log">
+            <div class="log__owner">${log.fields.legal ? `Owner` : `Unknown`} </div>
+            <div class="log__number">${log.fields.carno}</div>
+            <div class="log__check">
+              {% if log.legal %}
+              <span><i class="fa fa-check"></i></span>
+              {% else %}
+              <span><i class="fa fa-times"></i></span>
+              {% endif %}
+            </div>
+            <div class="log__time">${log.fields.created}</div>
+          </div>
+    `
+    logsList.innerHTML += newLog;
+  })
+</script>
 
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-              if (substrRegex.test(str)) {
-                matches.push(str);
-              }
-            });
-
-            cb(matches);
-          };
-        };
-
-        var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-          'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-          'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-          'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-          'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-          'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-          'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-          'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-          'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-        ];
-
-        $('#the-basics .typeahead').typeahead({
-          hint: true,
-          highlight: true,
-          minLength: 1
-        },
-        {
-          name: 'states',
-          source: substringMatcher(states)
-        });
-      </script>
-      
 {% endblock body %}

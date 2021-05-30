@@ -21,7 +21,7 @@ class DetectionVideo(models.Model):
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, default="default")
     path = models.CharField(max_length=1000, default=title)
-    video = models.FileField(upload_to='')
+    video = models.FileField(upload_to='', blank=True, null=True)
      
     class Meta:
         verbose_name = 'video'

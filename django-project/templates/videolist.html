@@ -16,7 +16,7 @@
     <a href="{% url 'video_detection' vid %}">
       <div class="box">
         <div class="video">
-          <video src="../videos/carvid.mp4"></video>
+          <video src="../videos/{{vid.path}}"></video>
         </div>
         <div class="box__info">
           <p class="box__title">{{vid}}</p>
@@ -35,7 +35,6 @@
       </div>
     </div> -->
   </div>
-  {% for vid in videos %} {{vid.path}} {% endfor %}
 </div>
 
 {% endblock body %}

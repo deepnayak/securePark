@@ -9,12 +9,13 @@
 <!-- EO Chart JS -->
 <!-- <link rel="stylesheet" href="dashboard.css" /> -->
 <link rel="stylesheet" href="{% static 'dashboard.css' %}" />
+
 {% endblock header %} {% block body %}
 <!-- Content Starts -->
 <div class="content">
   <div class="content__header">
     <div class="header__title">
-      <h2>Society Name</h2>
+      <h2>{{sn}}</h2>
     </div>
   </div>
   <section class="dashboard__grid">
@@ -23,7 +24,7 @@
         <div class="section__header">
           <h4>Total Cars Detected</h4>
         </div>
-        <div class="section__info">34545</div>
+        <div class="section__info">{{ t }}</div>
       </div>
     </div>
     <div class="total_legal">
@@ -31,7 +32,7 @@
         <div class="section__header">
           <h4>Total Legal Cars</h4>
         </div>
-        <div class="section__info">34545</div>
+        <div class="section__info">{{ tlegal }}</div>
       </div>
     </div>
     <div class="total_illegal">
@@ -39,7 +40,7 @@
         <div class="section__header">
           <h4>Total Illegal Cars</h4>
         </div>
-        <div class="section__info">34545</div>
+        <div class="section__info">{{ tillegal }}</div>
       </div>
     </div>
     <div class="recent_logs">
@@ -50,18 +51,24 @@
       <div class="log__table">
         {% for log in logs %}
         <!-- Individual Log -->
-        <div class="log">
-          <div class="log__number">{{log.carno}}</div>
-          <div class="log__check">
-            <span><i class="fa fa-check"></i></span>
+        <a href="{% url 'video_detection' log.video.title %}">
+          <div class="log">
+            <div class="log__number">{{log.carno}}</div>
+            <div class="log__check">
+              {% if log.legal %}
+              <span><i class="fa fa-check"></i></span>
+              {% else %}
+              <span><i class="fa fa-times"></i></span>
+              {% endif %}
+            </div>
+            <div class="log__time">{{log.created}}</div>
           </div>
-          <div class="log__time">{{log.created}}</div>
-        </div>
+        </a>
         <hr />
         <!-- EO Individual Log -->
         {% endfor %}
       </div>
-      <a href="{% url 'logs' %}">See All</a>
+      <a class="tag" href="{% url 'logs' %}">See All</a>
     </div>
     <div class="week_graph">
       <h2>Weekly Chart</h2>
@@ -72,7 +79,8 @@
 <script>
   console.log("Hemlo");
   let myChart = document.getElementById("myChart").getContext("2d");
-
+  // let legalCount = "{{ lcount|safe }}";
+  // let illegalCount = "{{ icount|safe }}";
   let lineChart = new Chart(myChart, {
     type: "line",
     data: {
@@ -88,13 +96,13 @@
       datasets: [
         {
           label: "Number of Legal",
-          data: [26, 4, 45, 3, 87, 12, 9],
+          data: {{ lcount|safe }},
           backgroundColor: "green",
           borderColor: "green",
         },
         {
           label: "Number of Illegal",
-          data: [43, 65, 2, 5, 3, 65, 4],
+          data: {{ icount|safe }},
           backgroundColor: "red",
           borderColor: "red",
         },

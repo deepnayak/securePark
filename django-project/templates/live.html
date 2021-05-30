@@ -1,10 +1,18 @@
-<html>
-  <head>
-    <title>Video Live Stream</title>
-  </head>
-  <body>
-    <h1>Video Live Stream</h1>
-    <img src="{% url 'video_feed' %}">
-    <!-- <img src="{% url 'webcam_feed' %}"> -->
-  </body>
-</html>
+{% extends 'base.html' %} {% load static %}
+<!-- Header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'live.css' %}" />
+{% endblock header %}
+<!-- Header -->
+{% block body %}
+<div class="content">
+  <h1>Video Live Stream</h1>
+  <img src="{% url 'video_feed' timestamp=timest %}" />
+
+  <a
+    href="{% url 'savevid' timestamp=timest type=ty %}"
+    style="margin-left: 50rem"
+    >Save Video</a
+  >
+</div>
+{% endblock body %}

@@ -14,12 +14,11 @@
   <div class="video__grid">
     <section class="video__player">
       <div class="video__container">
-        {% for i in videos %} {{ MEDIA_URL }}
         <video width="610" height="340" autoplay="autoplay" controls>
-          <source src="http://127.0.0.1:8000/videos/{{i}}" type="video/mp4" />
+          <source src="/videos/detect/{{ videos }}" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        {% endfor %} {{videos}}
+        {{videos}}
       </div>
     </section>
     <section class="logs">
