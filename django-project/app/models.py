@@ -44,3 +44,5 @@ class CarProfile(models.Model):
 class DetectionResult(models.Model):
     carno = models.CharField(max_length=150)
     user = models.ForeignKey(User, default="", on_delete=models.CASCADE, null=True, blank=True)
+    video = models.ForeignKey(DetectionVideo, default="", on_delete=models.CASCADE, null=True, blank=True)
+    legal = models.BooleanField(default=False)
