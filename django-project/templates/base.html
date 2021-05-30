@@ -48,7 +48,12 @@
             </a>
             <a href="{% url 'live' %}">
               <li>
-                <span><i class="fa fa-signal"></i></span> Live
+                <span><i class="fa fa-camera"></i></span> Live
+              </li>
+            </a>
+            <a href="{% url 'remote' %}">
+              <li>
+                <span><i class="fa fa-camera"></i></span> Remote
               </li>
             </a>
           </ul>
@@ -78,10 +83,14 @@
               src="{{ MEDIA_URL }}/videos/mario-av.png"
               style="border-radius: 50%; width: 30px"
           /></span>
-          <p>Profile Name</p>
+          <p style="letter-spacing: 0.1px; font-weight: bold">
+            {{ user.username }}
+          </p>
           <span><i class="fa fa-chevron-down"></i></span>
           <div class="dropdown__content">
-            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'profile' %}" style="letter-spacing: 0.1px"
+              >Profile</a
+            >
             <a href="{% url 'logout' %}">Logout</a>
           </div>
         </div>

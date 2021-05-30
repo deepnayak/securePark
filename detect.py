@@ -2,12 +2,14 @@ import argparse
 import time
 from pathlib import Path
 import asyncio
-
+import unicodedata
 import cv2
 import torch
 from torch._C import *
 import torch.backends.cudnn as cudnn
 from numpy import random
+import re
+import json
 
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
@@ -57,7 +59,7 @@ def crop(img0 , cord, count):
     subscription_key = "cc02edee73f140d38d17232da9899d20"
     assert subscription_key
     vision_base_url = "https://centralindia.api.cognitive.microsoft.com/vision/v3.1/"
-    ocr_url = vision_base_url + "ocr"
+    ocr_url = vision_base_url + "ocr?language=en"
     # print("hello")
     # try:
     image_url = os.getcwd()+"\\cropped"+str(count)+".jpg"
@@ -91,19 +93,32 @@ def crop(img0 , cord, count):
     label=[]
     for word in word_infos:
             label.append(word["text"])
-    image_number.append(label)
+    # image_number.append(label)
     image_name.append(image_url)
 
+    # print()
+    analysis1 = json.dumps(analysis)
+    print("\n\n"+analysis1+"\n\n")
     # if image_number[0][0] not in license_plate: 
-    if(len(image_number) > 0 and len(image_number[0]) > 0):
-        if len(image_number[0][0]) >= 8 and (image_number[0][0] not in license_plate):
-            license_plate.append(image_number[0][0])
-            print(image_number[0][0])
+    # if(len(label) > 0 and len(image_number[0]) > 0):
+    if(len(label) > 0):
+        currLabel = ''.join(label)
+        print('Raw: ' + currLabel)
+        if len(currLabel) >= 8 and (currLabel not in license_plate):
+            clean = unicodedata.normalize('NFD', currLabel).encode('ascii', 'ignore').decode('utf-8')
+            cleaner = re.sub(r'\W+', '', clean)
+            perc = len([c for c in cleaner if c.isdigit()]) / len(cleaner)
+            if perc > 0.5 and perc < 0.7 and (cleaner not in license_plate):
+                license_plate.append(cleaner)
+                print(cleaner)
 
     os.remove(os.getcwd()+"\\cropped"+str(count)+".jpg")
 
 def detect(save_img=False, opt=None, callback=None):
+    global license_plate
+    license_plate.clear()
     count = 0
+    terDet = False
     source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
     save_img = not opt.nosave and not source.endswith('.txt')  # save inference images
     webcam = source.isnumeric() or source.endswith('.txt') or source.lower().startswith(
@@ -216,9 +231,10 @@ def detect(save_img=False, opt=None, callback=None):
 
             if webcam:
                 # print("Hello")
-                (flag, encodedImage) = cv2.imencode(".jpg", im0)
+                im00 = im0
+                (flag, encodedImage) = cv2.imencode(".jpg", im00)
                 # if not flag:
-                callback(encodedImage.tobytes())
+                terDet = callback(encodedImage.tobytes(), license_plate)
 
             # Save results (image with detections)
             if save_img:
@@ -234,10 +250,16 @@ def detect(save_img=False, opt=None, callback=None):
                             w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                             h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
                         else:  # stream
-                            fps, w, h = 30, im0.shape[1], im0.shape[0]
+                            fps, w, h = 2, im0.shape[1], im0.shape[0]
                             save_path += '.mp4'
-                        vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+                        fourcc = 0x00000021
+                        # cv2.VideoWriter_fourcc(*'HVEC')
+                        vid_writer = cv2.VideoWriter(save_path, fourcc, fps, (w, h))
                     vid_writer.write(im0)
+            if terDet:
+                break
+        if terDet:
+            break
 
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
