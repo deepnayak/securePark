@@ -222,7 +222,7 @@ def video_feed(request, timestamp):
 def webcam_feed(request, timestamp):
     global stop1
     stop1 = False
-    opt = Options(source='http://192.168.1.52:8080/video', weights=os.path.abspath('../run/last.pt'))
+    opt = Options(source='http://192.168.0.104:8080/video', weights=os.path.abspath('../run/last.pt'))
     t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
     t2.start()
     sleep(10)
@@ -244,6 +244,12 @@ def intermediate(request, timestamp, type):
             DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
         else:
             DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
+    illegal = DetectionResult.objects.filter(video=content)
+    msg = "We found the following intruders in your society:\n"
+    for x in illegal:
+        msg += (x.carno + '\n')
+    profile = Profile.objects.get(user=request.user)
+    message(profile.contact, msg)
     return redirect('dashboard')
     
 def index(request):
@@ -306,8 +312,8 @@ def dashboard(request):
         illegalCount[x.created.weekday()] += 1
 
     
-
-    context = {"logs": logs, "lcount": legalCount, "icount": illegalCount, "tlegal": tlegal, "tillegal": tillegal, "t": t}
+    society = Profile.objects.get(user=request.user)
+    context = {"logs": logs, "lcount": legalCount, "icount": illegalCount, "tlegal": tlegal, "tillegal": tillegal, "t": t, "sn": society}
     return render(request, 'dashboard.html', context)
 
 def updateProfile(request):
@@ -400,6 +406,12 @@ def uploadvideo(request):
                 DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
             else:
                 DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
+        illegal = DetectionResult.objects.filter(video=content)
+        msg = "We found the following intruders in your society:\n"
+        for x in illegal:
+            msg += (x.carno + '\n')
+        profile = Profile.objects.get(user=request.user)
+        message(profile.contact, msg)
         return redirect('dashboard')
 
     return render(request, 'uploadvideo.html')
@@ -424,6 +436,8 @@ def wapalert(request):
     if request.method == 'POST': 
         number = request.POST['number']
         content = request.POST['content']
+        videos = DetectionVideo.objects.get(title=name)
+        cars = DetectionResult.objects.filter(video=videos)
         print(number, content)
         message(number, content)
     context = {}

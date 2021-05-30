@@ -45,42 +45,6 @@
   /* border: orange 2px solid; */
 }
 
-@media screen and (min-width: 768px) {
-  .dashboard__grid {
-    max-width: 760px;
-    height: 100vh;
-    margin: 1rem auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr;
-    grid-template-rows: 100px 1fr;
-    gap: 2rem;
-    grid-template-areas:
-      "total_vechicles total_legal total_illegal recent_logs"
-      "week_graph week_graph week_graph recent_logs";
-  }
-
-  .total_vechicles {
-    grid-area: total_vechicles;
-    /* border: aqua 2px solid; */
-  }
-  .total_legal {
-    grid-area: total_legal;
-    /* border: blue 2px solid; */
-  }
-  .total_illegal {
-    grid-area: total_illegal;
-    /* border: red 2px solid; */
-  }
-  .recent_logs {
-    grid-area: recent_logs;
-    /* border: pink 2px solid; */
-  }
-  .week_graph {
-    grid-area: week_graph;
-    /* border: orange 2px solid; */
-  }
-}
-
 @media screen and (min-width: 1170px) {
   .content {
     background-color: #f1f7fc;
@@ -144,7 +108,7 @@
     flex-direction: column;
     /* justify-content: center; */
   }
-  .recent_logs a {
+  .tag {
     /* border: 2px solid yellowgreen; */
     text-align: center;
     display: inline-block;

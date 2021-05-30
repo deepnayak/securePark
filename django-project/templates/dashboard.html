@@ -15,7 +15,7 @@
 <div class="content">
   <div class="content__header">
     <div class="header__title">
-      <h2>Society Name</h2>
+      <h2>{{sn}}</h2>
     </div>
   </div>
   <section class="dashboard__grid">
@@ -51,22 +51,24 @@
       <div class="log__table">
         {% for log in logs %}
         <!-- Individual Log -->
-        <div class="log">
-          <div class="log__number">{{log.carno}}</div>
-          <div class="log__check">
-            {% if i.legal %}
-            <span><i class="fa fa-check"></i></span>
-            {% else %}
-            <span><i class="fa fa-times"></i></span>
-            {% endif %}
+        <a href="{% url 'video_detection' log.video.title %}">
+          <div class="log">
+            <div class="log__number">{{log.carno}}</div>
+            <div class="log__check">
+              {% if log.legal %}
+              <span><i class="fa fa-check"></i></span>
+              {% else %}
+              <span><i class="fa fa-times"></i></span>
+              {% endif %}
+            </div>
+            <div class="log__time">{{log.created}}</div>
           </div>
-          <div class="log__time">{{log.created}}</div>
-        </div>
+        </a>
         <hr />
         <!-- EO Individual Log -->
         {% endfor %}
       </div>
-      <a href="{% url 'logs' %}">See All</a>
+      <a class="tag" href="{% url 'logs' %}">See All</a>
     </div>
     <div class="week_graph">
       <h2>Weekly Chart</h2>
