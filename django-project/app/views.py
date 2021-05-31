@@ -222,7 +222,7 @@ def video_feed(request, timestamp):
 def webcam_feed(request, timestamp):
     global stop1
     stop1 = False
-    opt = Options(source='http://192.168.0.104:8080/video', weights=os.path.abspath('../run/last.pt'))
+    opt = Options(source='http://192.168.43.1:8080/video', weights=os.path.abspath('../run/last.pt'))
     t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
     t2.start()
     sleep(10)

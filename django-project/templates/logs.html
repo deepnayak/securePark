@@ -10,9 +10,15 @@
     </div>
     <section class="logs">
       <div class="log__search">
-        <input type="text" class="search__box" placeholder="   shrek" />
-        <input type="date" class="calendar" />
-        <select name="status" id="status" class="status">
+        <input
+          type="text"
+          class="search__box"
+          placeholder=" shrek"
+          id="search__box"
+          onkeyup="filterList()"
+        />
+        <input type="date" class="calendar" id="calendarInput" />
+        <select name="status" id="select__box" class="status">
           <option value="" disabled selected hidden>Status</option>
           <option value="Illegal">Illegal</option>
           <option value="Legal">Legal</option>
@@ -48,27 +54,80 @@
 </div>
 <!-- EO Content -->
 <script>
-  let logs = {{logsJS|safe}};
-  console.log(logs)
-  console.log(logs[0].fields);
-  let logsList = document.getElementById("log__table");
-  logs.forEach((log) => {
-    let newLog = `
-    <div class="log">
-            <div class="log__owner">${log.fields.legal ? `Owner` : `Unknown`} </div>
-            <div class="log__number">${log.fields.carno}</div>
-            <div class="log__check">
-              {% if log.legal %}
-              <span><i class="fa fa-check"></i></span>
-              {% else %}
-              <span><i class="fa fa-times"></i></span>
-              {% endif %}
-            </div>
-            <div class="log__time">${log.fields.created}</div>
-          </div>
-    `
-    logsList.innerHTML += newLog;
-  })
+    let logs = {{logsJS|safe}};
+    // console.log(logs)
+    // console.log(logs[0].fields);
+    let logsList = document.getElementById("log__table");
+    logs.forEach((log) => {
+      let newLog = `
+            <div class="log">
+              <div class="log__owner">${log.fields.legal ? `Owner` : `Unknown`} </div>
+              <div class="log__number">${log.fields.carno}</div>
+              <div class="log__check">
+              ${log.fields.legal ? `<span><i class="fa fa-check"></i></span>` : `<span><i class="fa fa-times"></i></span>`}
+              </div>
+              <div class="log__time">${log.fields.created}</div>
+            </div>`
+      logsList.innerHTML += newLog;
+    })
+    let arrayOfPlateNumbers = document.querySelectorAll(".log__number");
+    // console.log(plateNumbers[0].textContent);
+    let numberPlate = [];
+
+    // console.log(numberPlate)
+
+    // Filter List from search bar
+    function filterList(){
+      let searchBox = document.getElementById("search__box");
+      // console.log(searchBox);
+      const toBeSearched = searchBox.value.toUpperCase();
+      console.log(toBeSearched);
+      arrayOfPlateNumbers.forEach((item) => {
+        // numberPlate.push(item.textContent);
+        if(item.textContent.indexOf(toBeSearched) > -1){
+          item.parentElement.style.display = "";
+        } else{
+          item.parentElement.style.display = "none";
+        }
+      })
+      console.log(numberPlate)
+    }
+  // Filter List from search bar
+
+  // Filter items from select dropdown
+    let selectBox = document.getElementById("select__box");
+    // console.log(selectBox)
+    selectBox.addEventListener("change", function(){
+      console.log(selectBox.value);
+      if(selectBox.value == "Illegal"){
+        arrayOfPlateNumbers.forEach((item) => {
+        // numberPlate.push(item.textContent);
+        let detectionStatus = item.parentElement.childNodes[5].childNodes[1].childNodes[0].classList.contains("fa-times");
+        console.log(detectionStatus)
+        if(detectionStatus){
+          item.parentElement.style.display = "";
+        } else{
+          item.parentElement.style.display = "none";
+        }
+      })
+      }
+      else if(selectBox.value == "Legal"){
+        arrayOfPlateNumbers.forEach((item) => {
+        // numberPlate.push(item.textContent);
+        let detectionStatus = item.parentElement.childNodes[5].childNodes[1].childNodes[0].classList.contains("fa-times");
+        console.log(detectionStatus)
+        if(detectionStatus){
+          item.parentElement.style.display = "none";
+        } else{
+          item.parentElement.style.display = "";
+        }
+      })
+      }
+    })
+  // Filter items from select dropdown
+
+  let calendarInput = document.getElementById("calendarInput");
+  console.log(calendarInput.value)
 </script>
 
 {% endblock body %}
