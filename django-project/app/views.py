@@ -5,6 +5,8 @@ import threading
 from django.core import serializers
 import csv, io
 from time import sleep
+from difflib import SequenceMatcher
+from heapq import nlargest as _nlargest
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -52,6 +54,28 @@ stop1 = False
 #     for x in illegal:
 #         illegalCount[x.weekday()] += 1
     
+
+def get_close_matches_indexes(word, possibilities, n=3, cutoff=0.6):
+
+    if not n >  0:
+        raise ValueError("n must be > 0: %r" % (n,))
+    if not 0.0 <= cutoff <= 1.0:
+        raise ValueError("cutoff must be in [0.0, 1.0]: %r" % (cutoff,))
+    result = []
+    s = SequenceMatcher()
+    s.set_seq2(word)
+    for idx, x in enumerate(possibilities):
+        s.set_seq1(x)
+        if s.real_quick_ratio() >= cutoff and \
+           s.quick_ratio() >= cutoff and \
+           s.ratio() >= cutoff:
+            result.append((s.ratio(), idx))
+
+    # Move the best scorers to head of list
+    result = _nlargest(n, result)
+
+    # Strip scores for the best n matches
+    return [x for score, x in result]
 
 class Options:
     def __init__(self, weights=None, source=None, img_size=None, 
@@ -222,7 +246,7 @@ def video_feed(request, timestamp):
 def webcam_feed(request, timestamp):
     global stop1
     stop1 = False
-    opt = Options(source='http://192.168.43.145:8080/video', weights=os.path.abspath('../run/last.pt'))
+    opt = Options(source='http://192.168.43.145:8080/video', weights=os.path.abspath('../run/last.pt'), name='webcam'+str(timestamp))
     t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
     t2.start()
     sleep(10)
@@ -443,12 +467,23 @@ def wapalert(request):
     context = {}
     return render(request, 'sendmessage.html', context)
 
-
 def logs(request):
     logs = DetectionResult.objects.filter(user=request.user)[::-1]
     vidName = [x.video.title for x in logs]
+    
+    owner = []
+    # DetectionResult.objects.get(user=request.user, legal=True)
+    valid_obj = CarProfile.objects.filter(user=request.user)
+    valid = [x.carno.replace(" ", "") for x in CarProfile.objects.filter(user=request.user)]
+    for plate in logs:
+        ind = get_close_matches_indexes(plate.carno, valid, cutoff=0.6)
+        if len(ind) > 0:
+            owner.append(valid_obj[ind[0]].name)
+        else:
+            owner.append("Unknown")
+
     logsJS = serializers.serialize("json", logs)
-    context = {"logs": logs, "vidname": vidName, "logsJS": logsJS}
+    context = {"logs": logs, "vidname": vidName, "logsJS": logsJS, 'owner': owner}
     return render(request, 'logs.html', context)
 
 def stats(request):

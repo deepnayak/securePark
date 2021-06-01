@@ -8,8 +8,56 @@
 <!-- Header -->
 {% block body %}
 
-<div class="content">
-  <div class="video__grid">
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+    font-family: "Quicksand", sans-serif;
+  }
+  .loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+  .loader h4 {
+    font-size: 60px;
+    color: #262626;
+    text-transform: uppercase;
+    letter-spacing: 15px;
+    padding: 0 20px;
+  }
+  .loader h4::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border-left: 7px solid #262626;
+    background: #fff;
+    mix-blend-mode: difference;
+    animation: animate 7s infinite linear;
+  }
+  @keyframes animate {
+    0% {
+      width: 0;
+    }
+    40% {
+      width: 100%;
+    }
+    60% {
+      width: 100%;
+    }
+    100% {
+      width: 0;
+    }
+  }
+</style>
+
+<div class="content" id="content">
+  <div class="video__grid" id="video__grid">
     <form action="" method="POST" enctype="multipart/form-data">
       <div class="video__form">
         {% csrf_token %}
@@ -31,7 +79,7 @@
           accept="video/mp4"
           style="margin-bottom: 2rem; width: 20rem; margin-left: 9rem"
         />
-        <div class="btn_box">
+        <div class="btn_box" id="video__btn">
           <button type="submit" style="margin-right: 0.5rem">
             Upload Video
           </button>
@@ -45,5 +93,21 @@
     </form>
   </div>
 </div>
+
+<script>
+  let videoBtn = document.getElementById("video__btn");
+  videoBtn.addEventListener("click", () => setTimeout(addContent, 1000));
+
+  function addContent() {
+    let content = document.getElementById("content");
+    let videoGrid = document.getElementById("video__grid");
+    videoGrid.style.display = "none";
+    let loader = `<div class="loader">
+        <h4>Processing ...</h4>
+      </div>`;
+    content.innerHTML += loader;
+    document.getElementById("video__grid") = videoGrid;
+  }
+</script>
 
 {% endblock body %}
