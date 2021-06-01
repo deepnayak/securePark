@@ -13,7 +13,7 @@
         <input
           type="text"
           class="search__box"
-          placeholder=" shrek"
+          placeholder=" Search by License Plate"
           id="search__box"
           onkeyup="filterList()"
         />
@@ -29,8 +29,7 @@
     <div class="recent_logs">
       <hr />
       <div class="log__table" id="log__table">
-        <!-- {% for log in logs %}
-        Individual Log 
+        <!-- {% for log in logs %} Individual Log
         <a href="{% url 'video_detection' log.video.title %}">
           <div class="log">
             <div class="log__owner">Mr. {{log.name}}</div>
@@ -46,8 +45,7 @@
           </div>
         </a>
         <hr />
-        EO Individual Log 
-        {% endfor %} -->
+        EO Individual Log {% endfor %} -->
       </div>
     </div>
   </div>
@@ -60,10 +58,11 @@
     // console.log(logs)
     // console.log(logs[0].fields);
     let logsList = document.getElementById("log__table");
+    let counter = 0;
     logs.forEach((log) => {
       let newLog = `
             <div class="log">
-              <div class="log__owner">${log.fields.legal ? `Owner` : `Unknown`} </div>
+              <div class="log__owner">${ownerList[counter]}</div>
               <div class="log__number">${log.fields.carno}</div>
               <div class="log__check">
               ${log.fields.legal ? `<span><i class="fa fa-check"></i></span>` : `<span><i class="fa fa-times"></i></span>`}
@@ -71,6 +70,7 @@
               <div class="log__time">${log.fields.created}</div>
             </div>`
       logsList.innerHTML += newLog;
+      counter += 1;
     })
     let arrayOfPlateNumbers = document.querySelectorAll(".log__number");
     // console.log(plateNumbers[0].textContent);
@@ -92,6 +92,7 @@
           item.parentElement.style.display = "none";
         }
       })
+
       console.log(numberPlate)
     }
   // Filter List from search bar
@@ -127,9 +128,6 @@
       }
     })
   // Filter items from select dropdown
-
-  let calendarInput = document.getElementById("calendarInput");
-  console.log(calendarInput.value)
 </script>
 
 {% endblock body %}
