@@ -246,7 +246,7 @@ def video_feed(request, timestamp):
 def webcam_feed(request, timestamp):
     global stop1
     stop1 = False
-    opt = Options(source='http://192.168.43.145:8080/video', weights=os.path.abspath('../run/last.pt'), name='webcam'+str(timestamp))
+    opt = Options(source='http://192.168.1.59:8080/video', weights=os.path.abspath('../run/last.pt'), name='webcam'+str(timestamp))
     t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
     t2.start()
     sleep(10)
@@ -268,12 +268,13 @@ def intermediate(request, timestamp, type):
             DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
         else:
             DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
-    illegal = DetectionResult.objects.filter(video=content)
+    illegal = DetectionResult.objects.filter(video=content).filter(legal=False)
     msg = "We found the following intruders in your society:\n"
     for x in illegal:
         msg += (x.carno + '\n')
     profile = Profile.objects.get(user=request.user)
-    message(profile.contact, msg)
+    if len(illegal) > 0:
+        message(profile.contact, msg)
     return redirect('dashboard')
     
 def index(request):
@@ -430,12 +431,13 @@ def uploadvideo(request):
                 DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=True, created=datetime.now())
             else:
                 DetectionResult.objects.create(carno=plate, user=request.user, video=content, legal=False, created=datetime.now())
-        illegal = DetectionResult.objects.filter(video=content)
+        illegal = DetectionResult.objects.filter(video=content).filter(legal=False)
         msg = "We found the following intruders in your society:\n"
         for x in illegal:
             msg += (x.carno + '\n')
         profile = Profile.objects.get(user=request.user)
-        message(profile.contact, msg)
+        if len(illegal) > 0:
+            message(profile.contact, msg)
         return redirect('dashboard')
 
     return render(request, 'uploadvideo.html')
