@@ -222,7 +222,7 @@ def video_feed(request, timestamp):
 def webcam_feed(request, timestamp):
     global stop1
     stop1 = False
-    opt = Options(source='http://192.168.0.158:8080/video', weights=os.path.abspath('../run/last.pt'))
+    opt = Options(source='http://192.168.1.5:8080/video', weights=os.path.abspath('../run/last.pt'))
     t2 = threading.Thread(target=detect, name='t2', args=(False, opt, frameGame1,))
     t2.start()
     sleep(10)
@@ -428,7 +428,7 @@ def video_detection(request, name):
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # print("hi from " + f"{BASE_DIR}")
     context = {'videos': video_path, 'cars': cars}
-    print(videos)
+    print("Final Path: " + video_path)
     return render(request, 'videovideo.html', context) 
     
 
