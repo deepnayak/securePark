@@ -5,14 +5,25 @@
 {% endblock header %}
 <!-- Header -->
 {% block body %}
-<div class="content">
+<div
+  class="content"
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  "
+>
   <h1>Video Live Stream</h1>
-  <img src="{% url 'video_feed' timestamp=timest %}" />
-
-  <a
-    href="{% url 'savevid' timestamp=timest type=ty %}"
-    style="margin-left: 50rem"
-    >Save Video</a
-  >
+  <div class="video_container" style="margin: 0 auto">
+    <img src="{% url 'video_feed' timestamp=timest %}" width="700" />
+  </div>
+  <div class="btn" style="transform: translateX(-25rem)">
+    <a
+      href="{% url 'savevid' timestamp=timest type=ty %}"
+      style="margin-left: 50rem"
+      >Save Video</a
+    >
+  </div>
 </div>
 {% endblock body %}

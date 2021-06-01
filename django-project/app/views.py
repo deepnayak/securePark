@@ -428,7 +428,7 @@ def video_detection(request, name):
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # print("hi from " + f"{BASE_DIR}")
     context = {'videos': video_path, 'cars': cars}
-    print(videos)
+    print("Final Path: " + video_path)
     return render(request, 'videovideo.html', context) 
     
 
