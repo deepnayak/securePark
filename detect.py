@@ -104,9 +104,9 @@ def crop(img0 , cord, count):
     if(len(label) > 0):
         currLabel = ''.join(label)
         print('Raw: ' + currLabel)
+        clean = unicodedata.normalize('NFD', currLabel).encode('ascii', 'ignore').decode('utf-8')
+        cleaner = re.sub(r'\W+', '', clean)
         if len(currLabel) >= 8 and (currLabel not in license_plate):
-            clean = unicodedata.normalize('NFD', currLabel).encode('ascii', 'ignore').decode('utf-8')
-            cleaner = re.sub(r'\W+', '', clean)
             perc = len([c for c in cleaner if c.isdigit()]) / len(cleaner)
             if perc > 0.5 and perc < 0.7 and (cleaner not in license_plate):
                 license_plate.append(cleaner)
