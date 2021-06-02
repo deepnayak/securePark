@@ -2,3 +2,21 @@
   grid-area: content;
   background: #f3f6f9;
 }
+
+@media screen and (max-width: 700px) {
+  .main {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 60px 1fr;
+    grid-template-areas:
+      "navbar navbar"
+      "content content";
+  }
+  .content {
+    /* background-color: red; */
+  }
+  .sidebar {
+    display: none;
+  }
+}
